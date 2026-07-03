@@ -1,0 +1,31 @@
+# Backend
+backend/target/
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/out-tsc/
+
+# Configurações privadas
+.env
+.env.*
+!.env.example
+*.local
+
+# Dados e backups locais
+backups/
+*.sql
+*.dump
+
+# IDE e sistema operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Temporários
+*.tmp
+*.bak

@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: estoque-inteligente-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: estoque_inteligente
+      POSTGRES_USER: estoque_user
+      POSTGRES_PASSWORD: estoque_pass
+    ports: ["5432:5432"]
+    volumes: ["estoque_postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estoque_user -d estoque_inteligente"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build: ./backend
+    container_name: estoque-inteligente-backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/estoque_inteligente
+      DB_USERNAME: estoque_user
+      DB_PASSWORD: estoque_pass
+      JWT_SECRET: ${JWT_SECRET:-troque-esta-chave-em-producao-estoque-inteligente-2026}
+      SERVER_PORT: 8080
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@estoque.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+    ports: ["8080:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  frontend:
+    build: ./frontend
+    container_name: estoque-inteligente-frontend
+    restart: unless-stopped
+    environment:
+      API_URL: ${API_URL:-http://localhost:8080}
+    ports: ["4200:80"]
+    depends_on: [backend]
+volumes:
+  estoque_postgres_data:
+    name: estoque-inteligente-postgres-data

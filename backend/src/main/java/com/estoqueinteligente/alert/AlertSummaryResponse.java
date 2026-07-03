@@ -1,0 +1,2 @@
+package com.estoqueinteligente.alert;
+public class AlertSummaryResponse { private final long totalLowStock,totalExpiring,totalExpired; public AlertSummaryResponse(long low,long expiring,long expired){this.totalLowStock=low;this.totalExpiring=expiring;this.totalExpired=expired;} public long getTotalLowStock(){return totalLowStock;} public long getTotalExpiring(){return totalExpiring;} public long getTotalExpired(){return totalExpired;} }

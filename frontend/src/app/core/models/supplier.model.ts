@@ -1,0 +1,1 @@
+export interface Supplier{id:number;name:string;phone:string|null;email:string|null;contactPerson:string|null;notes:string|null;createdAt:string;updatedAt:string;}export interface SupplierPayload{name:string;phone:string|null;email:string|null;contactPerson:string|null;notes:string|null;}

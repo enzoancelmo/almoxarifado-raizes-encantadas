@@ -1,0 +1,1 @@
+export type SuggestionPriority='ALTA'|'MEDIA'|'BAIXA';export type SuggestionType='ESTOQUE_BAIXO'|'VENCENDO'|'VENCIDO'|'BOA_MARGEM';export interface SmartSuggestion{type:SuggestionType;priority:SuggestionPriority;message:string;productId:number;productName:string;}export interface WhatsappMessage{productId:number;productName:string;message:string;reason:string;}

@@ -1,0 +1,2 @@
+package com.estoqueinteligente.report;
+public class WhatsappMessageResponse{private final Long productId;private final String productName,message,reason;public WhatsappMessageResponse(Long productId,String productName,String message,String reason){this.productId=productId;this.productName=productName;this.message=message;this.reason=reason;}public Long getProductId(){return productId;}public String getProductName(){return productName;}public String getMessage(){return message;}public String getReason(){return reason;}}

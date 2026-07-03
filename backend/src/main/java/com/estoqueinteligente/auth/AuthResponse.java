@@ -1,0 +1,1 @@
+package com.estoqueinteligente.auth;public class AuthResponse{private final String token;private final String type="Bearer";private final UserResponse user;public AuthResponse(String token,AppUser user){this.token=token;this.user=new UserResponse(user);}public String getToken(){return token;}public String getType(){return type;}public UserResponse getUser(){return user;}}

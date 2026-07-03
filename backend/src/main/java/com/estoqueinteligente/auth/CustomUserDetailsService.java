@@ -1,0 +1,3 @@
+package com.estoqueinteligente.auth;
+import org.springframework.security.core.userdetails.*;import org.springframework.stereotype.Service;
+@Service public class CustomUserDetailsService implements UserDetailsService{private final UserRepository repository;public CustomUserDetailsService(UserRepository repository){this.repository=repository;}@Override public UserDetails loadUserByUsername(String email)throws UsernameNotFoundException{AppUser user=repository.findByEmailIgnoreCase(email).orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));return User.withUsername(user.getEmail()).password(user.getPassword()).roles(user.getRole().name()).disabled(!user.isActive()).build();}}
