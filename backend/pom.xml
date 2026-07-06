@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>3.5.7</version><relativePath/></parent>
   <groupId>com.estoqueinteligente</groupId><artifactId>backend</artifactId><version>0.0.1-SNAPSHOT</version>
-  <name>Estoque Inteligente</name><description>API do sistema Estoque Inteligente</description>
+  <name>Almoxarifado Raízes Encantadas</name><description>API de gestão do almoxarifado do Instituto Raízes Encantadas</description>
   <properties><java.version>17</java.version></properties>
   <dependencies>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>

@@ -1,12 +1,12 @@
 {
-  "name": "Estoque Inteligente",
-  "short_name": "Estoque",
-  "description": "Controle de estoque, validade e reposição para pequenos mercados.",
+  "name": "Almoxarifado Raízes Encantadas",
+  "short_name": "Almoxarifado",
+  "description": "Gestão de itens, materiais, medicinas e recursos de uso espiritual.",
   "lang": "pt-BR",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#2563eb",
+  "theme_color": "#244b3a",
   "background_color": "#ffffff",
   "icons": [
     {

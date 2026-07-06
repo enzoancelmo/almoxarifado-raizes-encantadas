@@ -1,1 +1,1 @@
-package com.estoqueinteligente.report; public enum SuggestionType{ESTOQUE_BAIXO,VENCENDO,VENCIDO,BOA_MARGEM}
+package com.estoqueinteligente.report; public enum SuggestionType{SALDO_NEGATIVO,PENDENTE_CONTAGEM,NECESSIDADE_REPOSICAO}

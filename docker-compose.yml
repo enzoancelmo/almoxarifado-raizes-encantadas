@@ -1,14 +1,14 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: estoque_postgres
+    container_name: raizes_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-estoque_inteligente}
-      POSTGRES_USER: ${POSTGRES_USER:-estoque_user}
+      POSTGRES_DB: ${POSTGRES_DB:-almoxarifado_raizes}
+      POSTGRES_USER: ${POSTGRES_USER:-raizes_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - estoque_postgres_data:/var/lib/postgresql/data
+      - raizes_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -17,17 +17,17 @@ services:
 
   backend:
     build: ./backend
-    container_name: estoque_backend
+    container_name: raizes_backend
     restart: unless-stopped
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-estoque_inteligente}
-      DB_USERNAME: ${POSTGRES_USER:-estoque_user}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-almoxarifado_raizes}
+      DB_USERNAME: ${POSTGRES_USER:-raizes_user}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
       ADMIN_NAME: ${ADMIN_NAME:-Administrador}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@estoque.com}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@raizesencantadas.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       SERVER_PORT: 8080
     depends_on:
@@ -42,7 +42,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: estoque_frontend
+    container_name: raizes_frontend
     restart: unless-stopped
     ports:
       - "80:80"
@@ -51,5 +51,5 @@ services:
         condition: service_healthy
 
 volumes:
-  estoque_postgres_data:
-    name: estoque_postgres_data
+  raizes_postgres_data:
+    name: raizes_postgres_data

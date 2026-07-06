@@ -1,0 +1,1 @@
+-- Migration inicial. As tabelas serão adicionadas com os primeiros casos de uso.

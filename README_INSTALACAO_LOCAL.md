@@ -1,6 +1,6 @@
-# Instalação local — Estoque Inteligente
+# Instalação local — Almoxarifado Raízes Encantadas
 
-Este modo instala PostgreSQL, backend e frontend no computador principal do mercado. Até 15 pessoas na mesma rede podem acessar pelo navegador. O computador servidor precisa permanecer ligado e com o Docker Desktop aberto.
+Este modo instala PostgreSQL, backend e frontend no computador principal do Instituto. Até 15 pessoas na mesma rede podem acessar pelo navegador. O computador servidor precisa permanecer ligado e com o Docker Desktop aberto.
 
 ## 1. Preparar o computador servidor
 
@@ -21,8 +21,8 @@ No PowerShell:
 
 ```powershell
 cd "$HOME\Documents"
-git clone https://github.com/enzoancelmo/estoque-inteligente.git
-cd estoque-inteligente
+git clone https://github.com/enzoancelmo/almoxarifado-raizes-encantadas.git
+cd almoxarifado-raizes-encantadas
 ```
 
 Se o repositório for privado, o GitHub solicitará autenticação. Use o navegador, GitHub Desktop ou um token; a senha normal da conta não funciona em operações Git.
@@ -78,13 +78,13 @@ Não use `localhost` no celular. O roteador não pode estar com isolamento de cl
 Abra o PowerShell como administrador e execute:
 
 ```powershell
-New-NetFirewallRule -DisplayName "Estoque Inteligente HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+New-NetFirewallRule -DisplayName "Almoxarifado Raízes Encantadas HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
 ```
 
 Para remover essa regra futuramente:
 
 ```powershell
-Remove-NetFirewallRule -DisplayName "Estoque Inteligente HTTP"
+Remove-NetFirewallRule -DisplayName "Almoxarifado Raízes Encantadas HTTP"
 ```
 
 Recomenda-se reservar um IP fixo para o servidor no roteador. Caso o IP mude, o endereço usado pelos celulares também muda.
@@ -105,7 +105,7 @@ Entre como `ADMIN` e crie usuários na área disponível no sistema. `ADMIN` pod
 Com o sistema iniciado, dê dois cliques em `backup.bat`. O arquivo será criado em `backups`, com data e hora:
 
 ```text
-backups\backup_estoque_2026-07-06_14-30-00.sql
+backups\backup_raizes_2026-07-06_14-30-00.sql
 ```
 
 Copie periodicamente esses arquivos para outro disco ou pendrive.
@@ -115,7 +115,7 @@ Copie periodicamente esses arquivos para outro disco ou pendrive.
 Faça primeiro um backup dos dados atuais. Depois, arraste o arquivo `.sql` sobre `restaurar-backup.bat`, ou execute:
 
 ```powershell
-.\restaurar-backup.bat ".\backups\backup_estoque_2026-07-06_14-30-00.sql"
+.\restaurar-backup.bat ".\backups\backup_raizes_2026-07-06_14-30-00.sql"
 ```
 
 Confirme a operação quando solicitado.

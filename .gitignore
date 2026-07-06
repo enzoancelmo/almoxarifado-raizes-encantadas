@@ -3,6 +3,7 @@ backend/target/
 *.log
 
 # Frontend
+node_modules/
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
@@ -17,6 +18,7 @@ frontend/out-tsc/
 # Dados e backups locais
 backups/
 *.sql
+!backend/src/main/resources/db/migration/*.sql
 *.dump
 
 # IDE e sistema operacional

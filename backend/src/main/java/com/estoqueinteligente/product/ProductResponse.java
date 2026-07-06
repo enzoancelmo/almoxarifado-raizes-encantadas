@@ -1,3 +1,33 @@
 package com.estoqueinteligente.product;
-import java.math.BigDecimal;import java.time.*;import com.estoqueinteligente.supplier.Supplier;
-public class ProductResponse{private final Long id;private final String name,barcode;private final Long categoryId;private final String categoryName;private final Long supplierId;private final String supplierName;private final BigDecimal costPrice,salePrice;private final Integer quantity,minimumStock;private final LocalDate expirationDate;private final ProductStatus status;private final Instant createdAt,updatedAt;public ProductResponse(Long id,String name,String barcode,Long categoryId,String categoryName,Long supplierId,String supplierName,BigDecimal costPrice,BigDecimal salePrice,Integer quantity,Integer minimumStock,LocalDate expirationDate,ProductStatus status,Instant createdAt,Instant updatedAt){this.id=id;this.name=name;this.barcode=barcode;this.categoryId=categoryId;this.categoryName=categoryName;this.supplierId=supplierId;this.supplierName=supplierName;this.costPrice=costPrice;this.salePrice=salePrice;this.quantity=quantity;this.minimumStock=minimumStock;this.expirationDate=expirationDate;this.status=status;this.createdAt=createdAt;this.updatedAt=updatedAt;}static ProductResponse from(Product p,ProductStatus s){Supplier supplier=p.getSupplier();return new ProductResponse(p.getId(),p.getName(),p.getBarcode(),p.getCategory().getId(),p.getCategory().getName(),supplier==null?null:supplier.getId(),supplier==null?null:supplier.getName(),p.getCostPrice(),p.getSalePrice(),p.getQuantity(),p.getMinimumStock(),p.getExpirationDate(),s,p.getCreatedAt(),p.getUpdatedAt());}public Long id(){return id;}public Long getId(){return id;}public String getName(){return name;}public String getBarcode(){return barcode;}public Long getCategoryId(){return categoryId;}public String getCategoryName(){return categoryName;}public Long getSupplierId(){return supplierId;}public String getSupplierName(){return supplierName;}public BigDecimal getCostPrice(){return costPrice;}public BigDecimal getSalePrice(){return salePrice;}public Integer getQuantity(){return quantity;}public Integer getMinimumStock(){return minimumStock;}public LocalDate getExpirationDate(){return expirationDate;}public ProductStatus getStatus(){return status;}public Instant getCreatedAt(){return createdAt;}public Instant getUpdatedAt(){return updatedAt;}}
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+
+public class ProductResponse {
+    private final Long id,categoryId;
+    private final String name,brand,entityPurpose,unitOfMeasure,categoryName,notes;
+    private final Integer currentQuantity,monthlyRequiredQuantity,balance;
+    private final boolean countPending;
+    private final ProductStatus status;
+    private final Instant createdAt,updatedAt;
+    ProductResponse(Product p,ProductStatus status){
+        id=p.getId();name=p.getName();brand=p.getBrand();entityPurpose=p.getEntityPurpose();unitOfMeasure=p.getUnitOfMeasure();
+        categoryId=p.getCategory().getId();categoryName=p.getCategory().getName();currentQuantity=p.getQuantity();
+        monthlyRequiredQuantity=p.getMonthlyRequiredQuantity();balance=currentQuantity-monthlyRequiredQuantity;
+        countPending=p.isCountPending();notes=p.getNotes();this.status=status;createdAt=p.getCreatedAt();updatedAt=p.getUpdatedAt();
+    }
+    static ProductResponse from(Product p,ProductStatus s){return new ProductResponse(p,s);}
+    public Long id(){return id;} public Long getId(){return id;} public String getName(){return name;}
+    public String getBrand(){return brand;} public String getEntityPurpose(){return entityPurpose;}
+    public String getUnitOfMeasure(){return unitOfMeasure;} public Long getCategoryId(){return categoryId;}
+    public String getCategoryName(){return categoryName;} public Integer getCurrentQuantity(){return currentQuantity;}
+    public Integer getMonthlyRequiredQuantity(){return monthlyRequiredQuantity;} public Integer getBalance(){return balance;}
+    public boolean isCountPending(){return countPending;} public String getNotes(){return notes;}
+    public ProductStatus getStatus(){return status;} public Instant getCreatedAt(){return createdAt;} public Instant getUpdatedAt(){return updatedAt;}
+    // Compatibilidade temporária com relatórios e componentes reaproveitados.
+    public Integer getQuantity(){return currentQuantity;} public Integer getMinimumStock(){return monthlyRequiredQuantity;}
+    public String getBarcode(){return null;} public Long getSupplierId(){return null;} public String getSupplierName(){return null;}
+    public BigDecimal getCostPrice(){return BigDecimal.ZERO;} public BigDecimal getSalePrice(){return BigDecimal.ZERO;}
+    public LocalDate getExpirationDate(){return null;}
+}

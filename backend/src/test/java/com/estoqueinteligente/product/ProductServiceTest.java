@@ -1,28 +1,11 @@
 package com.estoqueinteligente.product;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
-
-class ProductServiceTest {
-    private final ProductService service = new ProductService(null, null, null);
-    @Test void shouldPrioritizeExpiredProduct() {
-        Product product = product(0, 10, LocalDate.now().minusDays(1));
-        assertEquals(ProductStatus.VENCIDO, service.calculateStatus(product));
-    }
-    @Test void shouldPrioritizeExpiringProductOverLowStock() {
-        Product product = product(0, 10, LocalDate.now().plusDays(30));
-        assertEquals(ProductStatus.VENCENDO, service.calculateStatus(product));
-    }
-    @Test void shouldIdentifyLowStock() {
-        Product product = product(10, 10, null);
-        assertEquals(ProductStatus.ESTOQUE_BAIXO, service.calculateStatus(product));
-    }
-    @Test void shouldIdentifyNormalStock() {
-        Product product = product(11, 10, null);
-        assertEquals(ProductStatus.NORMAL, service.calculateStatus(product));
-    }
-    private Product product(int quantity, int minimumStock, LocalDate expirationDate) {
-        Product product = new Product(); product.setQuantity(quantity); product.setMinimumStock(minimumStock); product.setExpirationDate(expirationDate); return product;
-    }
+class ProductServiceTest{
+ private final ProductService service=new ProductService(null,null,null);
+ @Test void pendingCountHasPriority(){Product p=item(0,5,true);assertEquals(ProductStatus.PENDENTE_CONTAGEM,service.calculateStatus(p));}
+ @Test void zeroWithNeedRequiresRestock(){assertEquals(ProductStatus.NECESSIDADE_REPOSICAO,service.calculateStatus(item(0,5,false)));}
+ @Test void belowMonthlyNeedIsNegative(){assertEquals(ProductStatus.SALDO_NEGATIVO,service.calculateStatus(item(3,5,false)));}
+ @Test void enoughQuantityIsNormal(){assertEquals(ProductStatus.NORMAL,service.calculateStatus(item(5,5,false)));}
+ private Product item(int current,int monthly,boolean pending){Product p=new Product();p.setQuantity(current);p.setMonthlyRequiredQuantity(monthly);p.setCountPending(pending);return p;}
 }

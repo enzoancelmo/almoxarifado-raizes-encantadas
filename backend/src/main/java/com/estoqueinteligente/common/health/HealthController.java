@@ -12,7 +12,7 @@ public class HealthController {
     public ResponseEntity<Map<String, Object>> health() {
         return ResponseEntity.ok(Map.of(
             "status", "UP",
-            "application", "Estoque Inteligente",
+            "application", "Almoxarifado Raízes Encantadas",
             "timestamp", Instant.now().toString()
         ));
     }
