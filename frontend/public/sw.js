@@ -1,5 +1,5 @@
-const STATIC_CACHE = 'estoque-static-v1';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg'];
+const STATIC_CACHE = 'raizes-static-v2';
+const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/logo-raizes-encantadas.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(STATIC_CACHE).then(cache => cache.addAll(APP_SHELL)));

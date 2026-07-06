@@ -10,10 +10,10 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "logo-raizes-encantadas.png",
+      "sizes": "2048x1152",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
