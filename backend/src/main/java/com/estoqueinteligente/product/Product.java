@@ -20,6 +20,8 @@ public class Product {
     @Column(name = "monthly_required_quantity", nullable = false) private Integer monthlyRequiredQuantity;
     @Column(name = "count_pending", nullable = false) private boolean countPending;
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 30) private ProductStatus status;
+    @Column(name = "purchase_value", nullable = false, precision = 15, scale = 2) private BigDecimal purchaseValue = BigDecimal.ZERO;
+    @Column(name = "exit_value", nullable = false, precision = 15, scale = 2) private BigDecimal exitValue = BigDecimal.ZERO;
     @Column(columnDefinition = "TEXT") private String notes;
 
     // Colunas legadas mantidas para compatibilidade da base técnica.
@@ -43,6 +45,8 @@ public class Product {
     public Integer getMonthlyRequiredQuantity(){return monthlyRequiredQuantity;} public void setMonthlyRequiredQuantity(Integer v){monthlyRequiredQuantity=v;}
     public boolean isCountPending(){return countPending;} public void setCountPending(boolean v){countPending=v;}
     public ProductStatus getStatus(){return status;} public void setStatus(ProductStatus v){status=v;}
+    public BigDecimal getPurchaseValue(){return purchaseValue;} public void setPurchaseValue(BigDecimal v){purchaseValue=v==null?BigDecimal.ZERO:v;}
+    public BigDecimal getExitValue(){return exitValue;} public void setExitValue(BigDecimal v){exitValue=v==null?BigDecimal.ZERO:v;}
     public String getNotes(){return notes;} public void setNotes(String v){notes=v;}
     public String getBarcode(){return barcode;} public void setBarcode(String v){barcode=v;}
     public Supplier getSupplier(){return supplier;} public void setSupplier(Supplier v){supplier=v;}

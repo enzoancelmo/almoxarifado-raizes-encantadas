@@ -16,6 +16,8 @@ import { CategoryFormComponent } from './features/categories/category-form.compo
 import { ShellComponent } from './layout/shell.component';
 import { authGuard } from './core/auth/auth.guard';
 import { TeamComponent } from './features/team/team.component';
+import { FinancialValuesComponent } from './features/financial/financial-values.component';
+import { ExitTypeListComponent } from './features/exit-types/exit-type-list.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -34,6 +36,8 @@ export const routes: Routes = [
     { path: 'movimentacoes/nova', component: StockMovementFormComponent },
     { path: 'alertas', component: AlertsComponent },
     { path: 'relatorios', component: ReportsComponent },
+    { path: 'valores', component: FinancialValuesComponent },
+    { path: 'tipos-saida', component: ExitTypeListComponent },
     { path: 'sugestoes', component: SmartSuggestionsComponent },
     { path: 'whatsapp', component: WhatsappMessagesComponent },
     { path: 'equipe', component: TeamComponent },

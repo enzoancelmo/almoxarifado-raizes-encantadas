@@ -34,3 +34,46 @@ A migration `V7__instituto_initial_data.sql` cria 12 categorias e 123 itens. Cam
 ## Tecnologias
 
 Java 17, Spring Boot, Angular, PostgreSQL, JWT, Flyway, Docker Compose e Nginx.
+
+## Controle financeiro do almoxarifado
+
+Esta etapa adiciona valor estimado de estoque, entradas, saídas e gasto por evento. Não é controle de caixa real; é valorização dos materiais do almoxarifado.
+
+- Valor estimado em estoque = quantidade atual x valor de compra do item.
+- Valor total da entrada = quantidade x valor unitário da entrada.
+- Valor total da saída = quantidade x valor unitário da saída.
+- Gasto por evento = soma das saídas vinculadas ao evento/cerimônia.
+
+### Telas
+
+- `Itens`: cadastro com `Valor de compra`, `Valor de saída` e valor total em estoque.
+- `Movimentações`: entrada/saída/ajuste com valor unitário, valor total, responsável e evento.
+- `Tipos de Saída`: cadastro de motivos estruturados de saída.
+- `Valores`: cards financeiros e últimas movimentações com valor.
+- `Relatórios > Por evento`: soma dos materiais usados em uma cerimônia/evento.
+
+### Endpoints financeiros
+
+- `GET /api/exit-types`
+- `POST /api/exit-types`
+- `PUT /api/exit-types/{id}`
+- `DELETE /api/exit-types/{id}`
+- `GET /api/financial-reports/summary`
+- `GET /api/financial-reports/event-costs?eventName=Nome do evento`
+- `GET /api/exports/items.csv`
+- `GET /api/exports/movements.csv`
+- `GET /api/exports/event-costs.csv`
+- `GET /api/exports/financial-summary.csv`
+
+### Como testar pela interface
+
+1. Acesse `http://localhost`.
+2. Entre com `admin@raizesencantadas.com` / `admin123`.
+3. Vá em `Itens`, edite um item e preencha os valores.
+4. Vá em `Tipos de Saída` e cadastre ou confirme as opções.
+5. Vá em `Movimentações > Nova Movimentação`.
+6. Registre uma entrada ou saída com valor unitário.
+7. Em saída, escolha o tipo de saída e informe o evento/cerimônia.
+8. Abra `Valores` para conferir os totais.
+9. Abra `Relatórios > Por evento` para consultar o gasto por cerimônia.
+10. Use os botões de exportação para baixar CSV.

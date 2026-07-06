@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface StockMovementRepository extends JpaRepository<StockMovement,Long> {
     @Query("SELECT m FROM StockMovement m JOIN FETCH m.product ORDER BY m.createdAt DESC") List<StockMovement> findAllWithProduct();
+    @Query("SELECT m FROM StockMovement m JOIN FETCH m.product LEFT JOIN FETCH m.exitType ORDER BY m.createdAt DESC") List<StockMovement> findAllWithProductAndExitType();
     @Query("SELECT m FROM StockMovement m JOIN FETCH m.product WHERE m.id=:id") Optional<StockMovement> findByIdWithProduct(@Param("id")Long id);
     @Query("SELECT m FROM StockMovement m JOIN FETCH m.product WHERE m.product.id=:productId ORDER BY m.createdAt DESC") List<StockMovement> findByProductId(@Param("productId")Long productId);
     @EntityGraph(attributePaths="product") List<StockMovement> findTop5ByOrderByCreatedAtDesc();

@@ -1,6 +1,8 @@
 package com.estoqueinteligente.stockmovement;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import com.estoqueinteligente.exittype.ExitType;
 import com.estoqueinteligente.product.Product;
 import jakarta.persistence.*;
 
@@ -13,6 +15,9 @@ public class StockMovement {
     @Column(nullable=false) private Integer quantity;
     @Column(name="previous_quantity",nullable=false) private Integer previousQuantity;
     @Column(name="new_quantity",nullable=false) private Integer newQuantity;
+    @Column(name="unit_value",nullable=false,precision=15,scale=2) private BigDecimal unitValue=BigDecimal.ZERO;
+    @Column(name="total_value",nullable=false,precision=15,scale=2) private BigDecimal totalValue=BigDecimal.ZERO;
+    @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="exit_type_id") private ExitType exitType;
     @Column(length=255) private String reason;
     @Column(name="responsible_name",length=150) private String responsibleName;
     @Column(length=255) private String purpose;
@@ -25,6 +30,9 @@ public class StockMovement {
     public Integer getQuantity(){return quantity;} public void setQuantity(Integer v){quantity=v;}
     public Integer getPreviousQuantity(){return previousQuantity;} public void setPreviousQuantity(Integer v){previousQuantity=v;}
     public Integer getNewQuantity(){return newQuantity;} public void setNewQuantity(Integer v){newQuantity=v;}
+    public BigDecimal getUnitValue(){return unitValue;} public void setUnitValue(BigDecimal v){unitValue=v==null?BigDecimal.ZERO:v;}
+    public BigDecimal getTotalValue(){return totalValue;} public void setTotalValue(BigDecimal v){totalValue=v==null?BigDecimal.ZERO:v;}
+    public ExitType getExitType(){return exitType;} public void setExitType(ExitType v){exitType=v;}
     public String getReason(){return reason;} public void setReason(String v){reason=v;} public Instant getCreatedAt(){return createdAt;}
     public String getResponsibleName(){return responsibleName;} public void setResponsibleName(String v){responsibleName=v;} public String getPurpose(){return purpose;} public void setPurpose(String v){purpose=v;} public String getEventName(){return eventName;} public void setEventName(String v){eventName=v;} public String getNotes(){return notes;} public void setNotes(String v){notes=v;}
 }

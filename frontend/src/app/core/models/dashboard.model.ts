@@ -1,2 +1,2 @@
 import { StockMovement } from './stock-movement.model';
-export interface DashboardSummary{totalProducts:number;lowStockProducts:number;expiringProducts:number;expiredProducts:number;totalStockValue:number;totalEntriesThisMonth:number;totalOutputsThisMonth:number;latestMovements:StockMovement[];}
+export interface DashboardSummary{totalProducts:number;lowStockProducts:number;expiringProducts:number;expiredProducts:number;totalStockValue:number;totalEntryValue:number;totalOutputValue:number;totalEntryValueThisMonth:number;totalOutputValueThisMonth:number;balanceValue:number;totalEntriesThisMonth:number;totalOutputsThisMonth:number;latestMovements:StockMovement[];}

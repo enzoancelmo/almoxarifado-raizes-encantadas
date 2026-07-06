@@ -24,8 +24,10 @@ public class ProductService {
         p.setUnitOfMeasure(normalize(r.getUnitOfMeasure()));p.setCategory(categories.getEntity(r.categoryId()));
         p.setQuantity(r.getCurrentQuantity().intValue());p.setMonthlyRequiredQuantity(r.getMonthlyRequiredQuantity().intValue());
         p.setMinimumStock(p.getMonthlyRequiredQuantity());p.setCountPending(Boolean.TRUE.equals(r.getCountPending()));
-        p.setNotes(normalize(r.getNotes()));p.setCostPrice(BigDecimal.ZERO);p.setSalePrice(BigDecimal.ZERO);
+        p.setPurchaseValue(defaultMoney(r.getPurchaseValue()));p.setExitValue(defaultMoney(r.getExitValue()));
+        p.setNotes(normalize(r.getNotes()));p.setCostPrice(p.getPurchaseValue());p.setSalePrice(p.getExitValue());
     }
+    private BigDecimal defaultMoney(BigDecimal v){return v==null?BigDecimal.ZERO:v;}
     private String normalize(String v){return v==null||v.isBlank()?null:v.trim();}
     public ProductStatus calculateStatus(Product p){
         if(p.isCountPending())return ProductStatus.PENDENTE_CONTAGEM;

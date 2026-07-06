@@ -1,6 +1,7 @@
 package com.estoqueinteligente.product;
 
 import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
 
 public class ProductRequest {
     @NotBlank(message="O nome do item é obrigatório") @Size(max=150) private String name;
@@ -10,6 +11,8 @@ public class ProductRequest {
     @NotNull(message="O tipo é obrigatório") private Long categoryId;
     @NotNull @DecimalMin(value="0.0") private Double currentQuantity;
     @NotNull @DecimalMin(value="0.0") private Double monthlyRequiredQuantity;
+    @DecimalMin(value="0.0",message="Valor de compra nÃ£o pode ser negativo") private BigDecimal purchaseValue;
+    @DecimalMin(value="0.0",message="Valor de saÃ­da nÃ£o pode ser negativo") private BigDecimal exitValue;
     private Boolean countPending;
     @Size(max=2000) private String notes;
     public String name(){return name;} public String getName(){return name;} public void setName(String v){name=v;}
@@ -19,6 +22,8 @@ public class ProductRequest {
     public Long categoryId(){return categoryId;} public Long getCategoryId(){return categoryId;} public void setCategoryId(Long v){categoryId=v;}
     public Double getCurrentQuantity(){return currentQuantity;} public void setCurrentQuantity(Double v){currentQuantity=v;}
     public Double getMonthlyRequiredQuantity(){return monthlyRequiredQuantity;} public void setMonthlyRequiredQuantity(Double v){monthlyRequiredQuantity=v;}
+    public BigDecimal getPurchaseValue(){return purchaseValue;} public void setPurchaseValue(BigDecimal v){purchaseValue=v;}
+    public BigDecimal getExitValue(){return exitValue;} public void setExitValue(BigDecimal v){exitValue=v;}
     public Boolean getCountPending(){return countPending;} public void setCountPending(Boolean v){countPending=v;}
     public String getNotes(){return notes;} public void setNotes(String v){notes=v;}
 }
