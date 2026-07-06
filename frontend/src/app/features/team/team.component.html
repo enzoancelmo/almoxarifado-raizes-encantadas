@@ -1,0 +1,28 @@
+<div class="heading">
+  <div>
+    <span>ADMINISTRAÇÃO</span>
+    <h1>Equipe</h1>
+    <p>Crie acessos individuais para as pessoas que usarão o sistema.</p>
+  </div>
+</div>
+
+<form (ngSubmit)="save()">
+  <h2>Novo usuário</h2>
+  <div class="grid">
+    <label>Nome
+      <input name="name" [(ngModel)]="name" maxlength="150" required>
+    </label>
+    <label>E-mail
+      <input name="email" [(ngModel)]="email" type="email" maxlength="180" required>
+    </label>
+    <label>Senha inicial
+      <input name="password" [(ngModel)]="password" type="password" minlength="6" required>
+    </label>
+    <label>Perfil
+      <input value="Usuário — consulta e movimentações" disabled>
+    </label>
+  </div>
+  @if (error) { <p class="error">{{error}}</p> }
+  @if (message) { <p class="success">{{message}}</p> }
+  <button type="submit" [disabled]="saving">{{saving ? 'Criando...' : 'Criar usuário'}}</button>
+</form>

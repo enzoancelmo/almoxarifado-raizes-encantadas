@@ -1,2 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:#172033}button,input{font-family:inherit}button{cursor:pointer}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:#172033}
+body{overflow-x:hidden;background:#f5f7fb}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+img,svg{max-width:100%}
+
+@media(max-width:768px){
+  button,.btn,input,select,textarea{min-height:44px}
+  input,select,textarea{font-size:16px}
+  table{min-width:720px}
+  .table-wrap,.table-container,.responsive-table{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .actions{flex-wrap:wrap}
+}

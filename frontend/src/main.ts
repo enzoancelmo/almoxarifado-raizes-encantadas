@@ -11,4 +11,8 @@ import { routes } from './app/app.routes';
 registerLocaleData(localePt);
 bootstrapApplication(AppComponent, {
   providers: [provideRouter(routes), provideHttpClient(withInterceptors([authInterceptor])), provideZonelessChangeDetection()]
+}).then(() => {
+  if ('serviceWorker' in navigator && window.isSecureContext) {
+    void navigator.serviceWorker.register('/sw.js');
+  }
 }).catch(error => console.error(error));

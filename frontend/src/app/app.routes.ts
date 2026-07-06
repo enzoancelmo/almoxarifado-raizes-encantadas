@@ -15,6 +15,7 @@ import { CategoryListComponent } from './features/categories/category-list.compo
 import { CategoryFormComponent } from './features/categories/category-form.component';
 import { ShellComponent } from './layout/shell.component';
 import { authGuard } from './core/auth/auth.guard';
+import { TeamComponent } from './features/team/team.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -35,6 +36,7 @@ export const routes: Routes = [
     { path: 'relatorios', component: ReportsComponent },
     { path: 'sugestoes', component: SmartSuggestionsComponent },
     { path: 'whatsapp', component: WhatsappMessagesComponent },
+    { path: 'equipe', component: TeamComponent },
     { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
   ]},
   { path: '**', redirectTo: '' }

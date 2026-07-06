@@ -1,0 +1,19 @@
+{
+  "name": "Estoque Inteligente",
+  "short_name": "Estoque",
+  "description": "Controle de estoque, validade e reposição para pequenos mercados.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

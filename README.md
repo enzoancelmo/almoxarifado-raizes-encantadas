@@ -1,6 +1,6 @@
 # Estoque Inteligente
 
-> Para publicar e instalar em outra máquina pelo Git, consulte [GUIA_GIT.md](GUIA_GIT.md).
+> Para instalar como servidor em outro PC e acessar pela rede local, consulte [README_INSTALACAO_LOCAL.md](README_INSTALACAO_LOCAL.md).
 
 **Controle de estoque, validade e reposição para pequenos mercados.**
 
@@ -36,8 +36,8 @@ MVP profissional voltado a mercados, mercearias, adegas, lojas de conveniência 
 
 ## Acesso inicial
 
-- E-mail: `admin@estoque.com`
-- Senha: `admin123`
+- E-mail: valor de `ADMIN_EMAIL` no arquivo `.env`
+- Senha: valor de `ADMIN_PASSWORD` no arquivo `.env`
 
 O usuário é criado automaticamente com senha BCrypt no primeiro startup.
 
@@ -75,13 +75,16 @@ Aplicação: `http://localhost:4200`.
 
 ## Execução completa com Docker
 
+Primeiro copie `.env.example` para `.env` e troque as senhas.
+
 ```bash
 docker compose up --build -d
 ```
 
-- Frontend: `http://localhost:4200`
-- Backend: `http://localhost:8080`
-- PostgreSQL: `localhost:5432`
+- Sistema: `http://localhost`
+- Pela rede local: `http://IP-DO-SERVIDOR`
+- API: caminho relativo `/api`, encaminhado internamente pelo Nginx
+- Backend e PostgreSQL não ficam expostos à rede
 
 Para encerrar: `docker compose down`. Para remover também os dados locais: `docker compose down -v`.
 
@@ -95,8 +98,6 @@ Para encerrar: `docker compose down`. Para remover também os dados locais: `doc
 | `JWT_SECRET` | Chave de assinatura JWT; obrigatória e exclusiva em produção |
 | `JWT_EXPIRATION` | Duração do token em milissegundos |
 | `SERVER_PORT` | Porta do backend |
-| `API_URL` | URL pública da API usada pelo frontend Docker |
-| `CORS_ALLOWED_ORIGINS` | Origens permitidas, separadas por vírgula |
 | `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Conta administrativa criada no primeiro startup |
 
 Os valores padrão são exclusivamente para desenvolvimento local.
@@ -121,11 +122,11 @@ Exceto login e health check, as APIs exigem `Authorization: Bearer TOKEN`. O reg
 ## Exemplo de API
 
 ```bash
-curl -X POST http://localhost:8080/auth/login \
+curl -X POST http://localhost/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@estoque.com","password":"admin123"}'
+  -d '{"email":"SEU_ADMIN_EMAIL","password":"SUA_SENHA"}'
 
-curl http://localhost:8080/products \
+curl http://localhost/api/products \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
@@ -144,7 +145,7 @@ A migration `V7` inclui dados de demonstração para todos os cenários relevant
 
 ## Observações de segurança
 
-Antes de publicar, copie `.env.example` para `.env`, troque `JWT_SECRET` e `ADMIN_PASSWORD`, configure `CORS_ALLOWED_ORIGINS`, use HTTPS e nunca versione o arquivo `.env`. O sistema é privado: `/auth/register` exige uma sessão `ADMIN` e cria somente usuários com perfil `USER`. O MVP não inclui refresh token, recuperação de senha ou permissões avançadas.
+Antes de usar, copie `.env.example` para `.env`, troque `POSTGRES_PASSWORD`, `JWT_SECRET` e `ADMIN_PASSWORD` e nunca versione o arquivo `.env`. O sistema é privado: `/auth/register` exige uma sessão `ADMIN` e cria somente usuários com perfil `USER`. O MVP não inclui refresh token nem recuperação de senha.
 
 ## Próximos passos
 
