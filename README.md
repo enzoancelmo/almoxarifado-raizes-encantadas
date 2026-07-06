@@ -25,6 +25,8 @@ Acesse `http://localhost`. O login inicial é `admin@raizesencantadas.com` / `ad
 
 No celular, use `http://IP-DO-SERVIDOR`. Consulte [README_INSTALACAO_LOCAL.md](README_INSTALACAO_LOCAL.md).
 
+Para demonstrar o sistema ao Instituto, siga o [README_APRESENTACAO_CLIENTE.md](README_APRESENTACAO_CLIENTE.md).
+
 ## Carga inicial
 
 A migration `V7__instituto_initial_data.sql` cria 12 categorias e 123 itens. Campos vazios de quantidade atual são carregados como zero com status `PENDENTE_CONTAGEM`. O Dendê é carregado com 3 litros, necessidade mensal 5 e saldo calculado em −2.
