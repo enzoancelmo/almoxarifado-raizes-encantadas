@@ -25,8 +25,8 @@ public class CsvExportService {
 
     @Transactional(readOnly=true)
     public String itemsCsv(){
-        StringBuilder csv=new StringBuilder("\uFEFFItem,Tipo,Quantidade Atual,Necessidade Mensal,Saldo,Valor de Compra,Valor de Saida,Valor em Estoque,Status\n");
-        for(ProductResponse p:productService.findAll())line(csv,p.getName(),p.getCategoryName(),p.getCurrentQuantity(),p.getMonthlyRequiredQuantity(),p.getBalance(),p.getPurchaseValue(),p.getExitValue(),p.getTotalInventoryValue(),p.getStatus());
+        StringBuilder csv=new StringBuilder("\uFEFFItem,Tipo,Quantidade Atual,Necessidade Mensal,Saldo,Valor de Compra Referencia,Valor de Saida Referencia,Custo Medio,Valor Real em Estoque,Status\n");
+        for(ProductResponse p:productService.findAll())line(csv,p.getName(),p.getCategoryName(),p.getCurrentQuantity(),p.getMonthlyRequiredQuantity(),p.getBalance(),p.getPurchaseValue(),p.getExitValue(),p.getAverageCost(),p.getCurrentStockValue(),p.getStatus());
         return csv.toString();
     }
 
@@ -50,7 +50,7 @@ public class CsvExportService {
     public String financialSummaryCsv(){
         FinancialSummaryResponse s=financialReportService.summary();
         StringBuilder csv=new StringBuilder("\uFEFFIndicador,Valor\n");
-        line(csv,"Valor estimado em estoque",s.getTotalInventoryValue());
+        line(csv,"Valor real em estoque",s.getTotalInventoryValue());
         line(csv,"Total de entradas",s.getTotalEntryValue());
         line(csv,"Total de saidas",s.getTotalOutputValue());
         line(csv,"Entradas no mes",s.getTotalEntryValueThisMonth());

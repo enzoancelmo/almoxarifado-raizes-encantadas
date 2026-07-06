@@ -3,6 +3,7 @@ package com.estoqueinteligente.product;
 import com.estoqueinteligente.category.CategoryService;
 import com.estoqueinteligente.common.ResourceNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ public class ProductService {
     @Transactional(readOnly=true) public List<ProductResponse> findByCurrentStatus(ProductStatus s){return repository.findAllWithCategory().stream().filter(p->calculateStatus(p)==s).map(p->ProductResponse.from(p,s)).toList();}
     @Transactional(readOnly=true) public List<ProductResponse> findLowStock(){return repository.findAllWithCategory().stream().filter(p->calculateStatus(p)!=ProductStatus.NORMAL).map(p->ProductResponse.from(p,calculateStatus(p))).toList();}
     @Transactional(readOnly=true) public ProductResponse findById(Long id){Product p=getEntity(id);return ProductResponse.from(p,calculateStatus(p));}
-    @Transactional public ProductResponse create(ProductRequest request){Product p=new Product();apply(p,request);p.setStatus(calculateStatus(p));return ProductResponse.from(repository.save(p),p.getStatus());}
+    @Transactional public ProductResponse create(ProductRequest request){Product p=new Product();apply(p,request);initializeFinancialStock(p);p.setStatus(calculateStatus(p));return ProductResponse.from(repository.save(p),p.getStatus());}
     @Transactional public ProductResponse update(Long id,ProductRequest request){Product p=getEntity(id);apply(p,request);p.setStatus(calculateStatus(p));return ProductResponse.from(repository.save(p),p.getStatus());}
     @Transactional public void delete(Long id){repository.delete(getEntity(id));}
     private Product getEntity(Long id){return repository.findByIdWithCategory(id).orElseThrow(()->new ResourceNotFoundException("Item não encontrado"));}
@@ -28,6 +29,11 @@ public class ProductService {
         p.setNotes(normalize(r.getNotes()));p.setCostPrice(p.getPurchaseValue());p.setSalePrice(p.getExitValue());
     }
     private BigDecimal defaultMoney(BigDecimal v){return v==null?BigDecimal.ZERO:v;}
+    private void initializeFinancialStock(Product p){
+        BigDecimal stockValue=p.getPurchaseValue().multiply(BigDecimal.valueOf(p.getQuantity()));
+        p.setCurrentStockValue(stockValue);
+        p.setAverageCost(p.getQuantity()>0?stockValue.divide(BigDecimal.valueOf(p.getQuantity()),2,RoundingMode.HALF_UP):BigDecimal.ZERO);
+    }
     private String normalize(String v){return v==null||v.isBlank()?null:v.trim();}
     public ProductStatus calculateStatus(Product p){
         if(p.isCountPending())return ProductStatus.PENDENTE_CONTAGEM;

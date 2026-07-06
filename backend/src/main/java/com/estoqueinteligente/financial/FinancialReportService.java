@@ -15,7 +15,7 @@ public class FinancialReportService {
     public FinancialReportService(ProductRepository productRepository,StockMovementRepository movementRepository){this.productRepository=productRepository;this.movementRepository=movementRepository;}
     @Transactional(readOnly=true) public FinancialSummaryResponse summary(){
         List<StockMovement> movements=movementRepository.findAllWithProductAndExitType();
-        BigDecimal inventory=productRepository.findAllWithCategory().stream().map(p->money(p.getPurchaseValue()).multiply(BigDecimal.valueOf(p.getQuantity()))).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal inventory=productRepository.findAllWithCategory().stream().map(p->money(p.getCurrentStockValue())).reduce(BigDecimal.ZERO,BigDecimal::add);
         BigDecimal entries=sum(movements,StockMovementType.ENTRADA,null,null,null,null);
         BigDecimal outputs=sum(movements,StockMovementType.SAIDA,null,null,null,null);
         ZoneId zone=ZoneId.systemDefault(); YearMonth month=YearMonth.now(zone); Instant start=month.atDay(1).atStartOfDay(zone).toInstant(); Instant end=month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant();
