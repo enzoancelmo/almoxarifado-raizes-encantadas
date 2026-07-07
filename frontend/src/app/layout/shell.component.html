@@ -13,6 +13,7 @@
       <a routerLink="/produtos" routerLinkActive="active"><i>□</i> Itens</a>
       <a routerLink="/entrada-rapida" routerLinkActive="active"><i>＋</i> Entrada Rápida</a>
       <a routerLink="/saida-rapida" routerLinkActive="active"><i>−</i> Saída Rápida</a>
+      <a routerLink="/modelos-evento" routerLinkActive="active"><i>☷</i> Modelos de Evento</a>
       <a routerLink="/movimentacoes" routerLinkActive="active"><i>⇄</i> Movimentações</a>
       <a routerLink="/valores" routerLinkActive="active"><i>R$</i> Valores</a>
       <a routerLink="/alertas" routerLinkActive="active"><i>!</i> Alertas</a>
@@ -32,32 +33,17 @@
 
     <div class="sidebar-footer">
       <div class="avatar">{{user()?.name?.charAt(0)||'U'}}</div>
-      <div>
-        <strong>{{user()?.name||'Usuário'}}</strong>
-        <span>{{user()?.role==='ADMIN'?'Administrador':'Usuário'}}</span>
-      </div>
+      <div><strong>{{user()?.name||'Usuário'}}</strong><span>{{user()?.role==='ADMIN'?'Administrador':'Usuário'}}</span></div>
       <button (click)="logout()" title="Sair" aria-label="Sair">↗</button>
     </div>
   </aside>
-
   <div class="scrim" (click)="menuOpen=false"></div>
-
   <main>
     <header>
       <button class="menu-button" (click)="menuOpen=!menuOpen" aria-label="Abrir menu">☰</button>
-      <form class="search" (ngSubmit)="searchProducts()">
-        ⌕
-        <input name="globalSearch" [(ngModel)]="searchTerm" placeholder="Buscar itens..." aria-label="Buscar itens">
-        <button type="submit">Buscar</button>
-      </form>
-      <div class="header-actions">
-        <button aria-label="Notificações">♢<b></b></button>
-        <span>{{user()?.name}}</span>
-      </div>
+      <form class="search" (ngSubmit)="searchProducts()">⌕<input name="globalSearch" [(ngModel)]="searchTerm" placeholder="Buscar itens..." aria-label="Buscar itens"><button type="submit">Buscar</button></form>
+      <div class="header-actions"><button aria-label="Notificações">♢<b></b></button><span>{{user()?.name}}</span></div>
     </header>
-
-    <section class="page">
-      <router-outlet />
-    </section>
+    <section class="page"><router-outlet /></section>
   </main>
 </div>

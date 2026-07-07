@@ -1,0 +1,24 @@
+package com.estoqueinteligente.eventtemplate;
+
+import com.estoqueinteligente.product.Product;
+import jakarta.persistence.*;
+import java.time.Instant;
+
+@Entity
+@Table(name="event_template_items",uniqueConstraints=@UniqueConstraint(name="uk_event_template_item",columnNames={"event_template_id","product_id"}))
+public class EventTemplateItem {
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;
+    @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="event_template_id") private EventTemplate eventTemplate;
+    @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="product_id") private Product product;
+    @Column(name="suggested_quantity",nullable=false) private Integer suggestedQuantity;
+    @Column(columnDefinition="TEXT") private String notes;
+    @Column(name="created_at",nullable=false,updatable=false) private Instant createdAt;
+    @Column(name="updated_at",nullable=false) private Instant updatedAt;
+    @PrePersist void prePersist(){createdAt=updatedAt=Instant.now();}
+    @PreUpdate void preUpdate(){updatedAt=Instant.now();}
+    public Long getId(){return id;} public EventTemplate getEventTemplate(){return eventTemplate;} public void setEventTemplate(EventTemplate v){eventTemplate=v;}
+    public Product getProduct(){return product;} public void setProduct(Product v){product=v;}
+    public Integer getSuggestedQuantity(){return suggestedQuantity;} public void setSuggestedQuantity(Integer v){suggestedQuantity=v;}
+    public String getNotes(){return notes;} public void setNotes(String v){notes=v;}
+    public Instant getCreatedAt(){return createdAt;} public Instant getUpdatedAt(){return updatedAt;}
+}

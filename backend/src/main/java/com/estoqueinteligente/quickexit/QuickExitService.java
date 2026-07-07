@@ -3,6 +3,7 @@ package com.estoqueinteligente.quickexit;
 import com.estoqueinteligente.common.BusinessException;
 import com.estoqueinteligente.common.ResourceNotFoundException;
 import com.estoqueinteligente.exittype.ExitType;
+import com.estoqueinteligente.eventtemplate.EventTemplate;
 import com.estoqueinteligente.exittype.ExitTypeService;
 import com.estoqueinteligente.product.Product;
 import com.estoqueinteligente.product.ProductRepository;
@@ -24,19 +25,22 @@ public class QuickExitService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final ExitTypeService exitTypeService;
+    private final com.estoqueinteligente.eventtemplate.EventTemplateService eventTemplateService;
 
-    public QuickExitService(StockExitBatchRepository batchRepository,StockMovementRepository movementRepository,ProductRepository productRepository,ProductService productService,ExitTypeService exitTypeService){this.batchRepository=batchRepository;this.movementRepository=movementRepository;this.productRepository=productRepository;this.productService=productService;this.exitTypeService=exitTypeService;}
+    public QuickExitService(StockExitBatchRepository batchRepository,StockMovementRepository movementRepository,ProductRepository productRepository,ProductService productService,ExitTypeService exitTypeService,com.estoqueinteligente.eventtemplate.EventTemplateService eventTemplateService){this.batchRepository=batchRepository;this.movementRepository=movementRepository;this.productRepository=productRepository;this.productService=productService;this.exitTypeService=exitTypeService;this.eventTemplateService=eventTemplateService;}
 
     @Transactional
     public QuickExitResponse create(QuickExitRequest request){
         if(request.getItems()==null||request.getItems().isEmpty())throw new BusinessException("Informe pelo menos um item para a saída.");
-        ExitType exitType=request.getExitTypeId()==null?null:exitTypeService.getEntity(request.getExitTypeId());
+        ExitType exitType=exitTypeService.getEntity(request.getExitTypeId());
+        EventTemplate eventTemplate=request.getEventTemplateId()==null?null:eventTemplateService.getEntity(request.getEventTemplateId());
         List<AggregatedItem> items=aggregate(request.getItems());
         Map<Long,Product> products=loadAndValidateProducts(items);
 
         StockExitBatch batch=new StockExitBatch();
         batch.setEventName(request.getEventName().trim());
         batch.setExitType(exitType);
+        batch.setEventTemplate(eventTemplate);
         batch.setResponsibleName(normalize(request.getResponsibleName()));
         batch.setExitDate(request.getExitDate());
         batch.setNotes(normalize(request.getNotes()));
@@ -78,9 +82,11 @@ public class QuickExitService {
             movements.add(StockMovementResponse.from(movementRepository.save(movement)));
         }
 
+        batch.setTotalDifferentItems(items.size());
+        batch.setTotalQuantity(totalQuantity);
         batch.setTotalValue(totalValue);
         batch=batchRepository.save(batch);
-        return new QuickExitResponse(batch.getId(),batch.getEventName(),exitType==null?null:exitType.getName(),batch.getResponsibleName(),batch.getExitDate(),batch.getNotes(),items.size(),totalQuantity,totalValue,movements);
+        return new QuickExitResponse(batch.getId(),batch.getEventName(),eventTemplate==null?null:eventTemplate.getId(),eventTemplate==null?null:eventTemplate.getName(),exitType.getName(),batch.getResponsibleName(),batch.getExitDate(),batch.getNotes(),items.size(),totalQuantity,totalValue,movements);
     }
 
     private List<AggregatedItem> aggregate(List<QuickExitRequest.Item> rawItems){

@@ -9,6 +9,7 @@ export interface QuickExitItemPayload {
 
 export interface QuickExitPayload {
   eventName: string;
+  eventTemplateId: number | null;
   exitTypeId: number | null;
   responsibleName: string | null;
   exitDate: string | null;
@@ -19,10 +20,13 @@ export interface QuickExitPayload {
 export interface QuickExitResponse {
   id: number;
   eventName: string;
+  eventTemplateId: number | null;
+  eventTemplateName: string | null;
   exitTypeName: string | null;
   responsibleName: string | null;
   exitDate: string | null;
   notes: string | null;
+  totalDifferentItems: number;
   totalItems: number;
   totalQuantity: number;
   totalValue: number;

@@ -40,9 +40,9 @@ public class CsvExportService {
     @Transactional(readOnly=true)
     public String eventCostsCsv(String eventName,LocalDate start,LocalDate end){
         EventCostResponse report=financialReportService.eventCosts(eventName,start,end,null);
-        StringBuilder csv=new StringBuilder("\uFEFFEvento,Data,Item,Quantidade,Valor Unitario,Valor Total,Tipo Saida,Responsavel,Observacao\n");
-        for(FinancialMovementResponse m:report.getMovements())line(csv,report.getEventName(),m.getCreatedAt(),m.getItemName(),m.getQuantity(),m.getUnitValue(),m.getTotalValue(),m.getExitTypeName(),m.getResponsibleName(),m.getNotes());
-        line(csv,"TOTAL","","","","",report.getTotalOutputValue(),"","","");
+        StringBuilder csv=new StringBuilder("\uFEFFEvento,Modelo,Data,Item,Quantidade,Valor Unitario,Valor Total,Tipo Saida,Responsavel,Observacao\n");
+        for(FinancialMovementResponse m:report.getMovements())line(csv,report.getEventName(),m.getEventTemplateName(),m.getCreatedAt(),m.getItemName(),m.getQuantity(),m.getUnitValue(),m.getTotalValue(),m.getExitTypeName(),m.getResponsibleName(),m.getNotes());
+        line(csv,"TOTAL","","","","","",report.getTotalOutputValue(),"","","");
         return csv.toString();
     }
 

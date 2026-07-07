@@ -21,6 +21,7 @@ import { ExitTypeListComponent } from './features/exit-types/exit-type-list.comp
 import { QuickEntryComponent } from './features/quick-entry/quick-entry.component';
 import { QuickExitComponent } from './features/quick-exit/quick-exit.component';
 import { EntryTypeListComponent } from './features/entry-types/entry-type-list.component';
+import { EventTemplatesComponent } from './features/event-templates/event-templates.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
     { path: 'movimentacoes', component: StockMovementListComponent },
     { path: 'entrada-rapida', component: QuickEntryComponent },
     { path: 'saida-rapida', component: QuickExitComponent },
+    { path: 'modelos-evento', component: EventTemplatesComponent },
     { path: 'movimentacoes/nova', component: StockMovementFormComponent },
     { path: 'alertas', component: AlertsComponent },
     { path: 'relatorios', component: ReportsComponent },

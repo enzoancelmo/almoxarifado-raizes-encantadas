@@ -9,13 +9,15 @@ import java.util.List;
 
 public class QuickExitRequest {
     @NotBlank(message = "Evento/Cerimônia é obrigatório") @Size(max = 180) private String eventName;
-    private Long exitTypeId;
+    private Long eventTemplateId;
+    @NotNull(message="Tipo de saída é obrigatório") private Long exitTypeId;
     @Size(max = 150) private String responsibleName;
     private LocalDate exitDate;
     @Size(max = 2000) private String notes;
     @Valid @NotEmpty(message = "Informe pelo menos um item") private List<Item> items = new ArrayList<>();
 
     public String getEventName(){return eventName;} public void setEventName(String v){eventName=v;}
+    public Long getEventTemplateId(){return eventTemplateId;} public void setEventTemplateId(Long v){eventTemplateId=v;}
     public Long getExitTypeId(){return exitTypeId;} public void setExitTypeId(Long v){exitTypeId=v;}
     public String getResponsibleName(){return responsibleName;} public void setResponsibleName(String v){responsibleName=v;}
     public LocalDate getExitDate(){return exitDate;} public void setExitDate(LocalDate v){exitDate=v;}
