@@ -1,1 +1,105 @@
-<div class="page-heading"><div><span class="breadcrumb">Almoxarifado Raízes Encantadas / Movimentações / Nova</span><h1>Nova movimentação</h1><p>Registre entrada, saída ou ajuste com valor financeiro.</p></div><a routerLink="/movimentacoes">← Voltar ao histórico</a></div><form class="form-card" [formGroup]="form" (ngSubmit)="save()"><div *ngIf="error" class="alert">{{error}}</div><div *ngIf="loading" class="state">Carregando itens...</div><ng-container *ngIf="!loading"><section><label>Item *<select formControlName="productId"><option [ngValue]="null" disabled>Selecione um item</option><option *ngFor="let product of products" [ngValue]="product.id">{{product.name}} — {{product.quantity}} em estoque</option></select><small *ngIf="invalid('productId')">Selecione o item.</small></label><div class="stock" *ngIf="selectedProduct"><span>Estoque atual</span><strong>{{selectedProduct.quantity}}</strong><small>Compra ref.: {{selectedProduct.purchaseValue|currency:'BRL':'symbol':'1.2-2':'pt-BR'}} | Custo médio: {{selectedProduct.averageCost|currency:'BRL':'symbol':'1.2-2':'pt-BR'}} | Valor real: {{selectedProduct.currentStockValue|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</small></div></section><section><label>Tipo de movimentação *<div class="type-grid"><label *ngFor="let type of types" [attr.data-selected]="form.value.movementType===type"><input type="radio" formControlName="movementType" [value]="type"><b>{{typeLabel(type)}}</b><span>{{type==='ENTRADA'?'Somar ao estoque':type==='SAIDA'?'Retirar do estoque pelo custo médio':'Definir quantidade final'}}</span></label></div><small *ngIf="invalid('movementType')">Escolha o tipo de movimentação.</small></label></section><section class="fields"><label>{{isAdjustment?'Nova quantidade final':'Quantidade'}} *<input type="number" min="0" step="1" formControlName="quantity" placeholder="0"><small *ngIf="invalid('quantity')">Informe um valor igual ou maior que zero.</small></label><label>Valor unitário<input type="number" min="0" step="0.01" formControlName="unitValue" [placeholder]="suggestedUnitValue.toFixed(2)"><small>Sugestão: {{suggestedUnitValue|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</small></label><label *ngIf="isExit">Tipo de saída<select formControlName="exitTypeId"><option [ngValue]="null">Selecione</option><option *ngFor="let type of exitTypes" [ngValue]="type.id">{{type.name}}</option></select><small><a routerLink="/tipos-saida">Cadastrar novo tipo</a></small></label><label>Evento/Cerimônia<input formControlName="eventName" placeholder="Ex.: Terra, o primeiro altar"></label><label>Responsável<input formControlName="responsibleName"></label><label>Motivo<textarea rows="3" maxlength="255" formControlName="reason" placeholder="Ex.: uso em cerimônia, compra ou correção"></textarea></label><label class="wide">Observações<textarea rows="3" formControlName="notes"></textarea></label><div class="hint"><b>Total da movimentação</b><span>{{calculatedTotal|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span></div></section></ng-container><footer><a routerLink="/movimentacoes">Cancelar</a><button [disabled]="saving||loading" type="submit">{{saving?'Salvando...':'Registrar movimentação'}}</button></footer></form>
+<div class="page-heading">
+  <div>
+    <span class="breadcrumb">Almoxarifado Raízes Encantadas / Movimentações / Nova</span>
+    <h1>Nova movimentação</h1>
+    <p>Registre entrada, saída ou ajuste com valor financeiro.</p>
+  </div>
+  <a routerLink="/movimentacoes">← Voltar ao histórico</a>
+</div>
+
+<form class="form-card" [formGroup]="form" (ngSubmit)="save()">
+  <div *ngIf="error" class="alert">{{ error }}</div>
+  <div *ngIf="loading" class="state">Carregando itens...</div>
+
+  <ng-container *ngIf="!loading">
+    <section>
+      <label>
+        Item *
+        <select formControlName="productId">
+          <option [ngValue]="null" disabled>Selecione um item</option>
+          <option *ngFor="let product of products" [ngValue]="product.id">
+            {{ product.name }} — {{ product.currentQuantity }} em estoque
+          </option>
+        </select>
+        <small *ngIf="invalid('productId')">Selecione o item.</small>
+      </label>
+
+      <div class="stock" *ngIf="selectedProduct">
+        <span>Estoque atual</span>
+        <strong>{{ selectedProduct.currentQuantity }}</strong>
+        <small>
+          Compra ref.: {{ selectedProduct.purchaseValue | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} |
+          Custo médio: {{ selectedProduct.averageCost | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} |
+          Valor real: {{ selectedProduct.currentStockValue | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+        </small>
+      </div>
+    </section>
+
+    <section>
+      <label>
+        Tipo de movimentação *
+        <div class="type-grid">
+          <label *ngFor="let type of types" [attr.data-selected]="form.value.movementType === type">
+            <input type="radio" formControlName="movementType" [value]="type">
+            <b>{{ typeLabel(type) }}</b>
+            <span>{{ type === 'ENTRADA' ? 'Somar ao estoque' : type === 'SAIDA' ? 'Retirar do estoque pelo custo médio' : 'Definir quantidade final' }}</span>
+          </label>
+        </div>
+        <small *ngIf="invalid('movementType')">Escolha o tipo de movimentação.</small>
+      </label>
+    </section>
+
+    <section class="fields">
+      <label>
+        {{ isAdjustment ? 'Nova quantidade final' : 'Quantidade' }} *
+        <input type="number" min="1" step="1" formControlName="quantity" placeholder="0">
+        <small *ngIf="invalid('quantity')">Informe um valor maior que zero.</small>
+      </label>
+
+      <label>
+        Valor unitário
+        <input type="number" min="0" step="0.01" formControlName="unitValue" [placeholder]="suggestedUnitValue.toFixed(2)">
+        <small class="muted">Sugestão: {{ suggestedUnitValue | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</small>
+      </label>
+
+      <label *ngIf="isExit">
+        Tipo de saída
+        <select formControlName="exitTypeId">
+          <option [ngValue]="null">Selecione</option>
+          <option *ngFor="let type of exitTypes" [ngValue]="type.id">{{ type.name }}</option>
+        </select>
+        <small class="muted"><a routerLink="/tipos-saida">Cadastrar novo tipo</a></small>
+      </label>
+
+      <label>
+        Evento/Cerimônia
+        <input formControlName="eventName" placeholder="Ex.: Terra, o primeiro altar">
+      </label>
+
+      <label>
+        Responsável
+        <input formControlName="responsibleName">
+      </label>
+
+      <label>
+        Motivo
+        <textarea rows="3" maxlength="255" formControlName="reason" placeholder="Ex.: uso em cerimônia, compra ou correção"></textarea>
+      </label>
+
+      <label class="wide">
+        Observações
+        <textarea rows="3" formControlName="notes"></textarea>
+      </label>
+
+      <div class="hint">
+        <b>Total da movimentação</b>
+        <span>{{ calculatedTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+      </div>
+    </section>
+  </ng-container>
+
+  <footer>
+    <a routerLink="/movimentacoes">Cancelar</a>
+    <button [disabled]="saving || loading" type="submit">{{ saving ? 'Salvando...' : 'Registrar movimentação' }}</button>
+  </footer>
+</form>
