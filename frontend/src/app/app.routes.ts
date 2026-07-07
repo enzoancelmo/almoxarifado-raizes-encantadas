@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { AlertsComponent } from './features/alerts/alerts.component';
@@ -18,6 +18,8 @@ import { authGuard } from './core/auth/auth.guard';
 import { TeamComponent } from './features/team/team.component';
 import { FinancialValuesComponent } from './features/financial/financial-values.component';
 import { ExitTypeListComponent } from './features/exit-types/exit-type-list.component';
+import { QuickEntryComponent } from './features/quick-entry/quick-entry.component';
+import { EntryTypeListComponent } from './features/entry-types/entry-type-list.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,11 +35,13 @@ export const routes: Routes = [
     { path: 'fornecedores/novo', component: SupplierFormComponent },
     { path: 'fornecedores/:id/editar', component: SupplierFormComponent },
     { path: 'movimentacoes', component: StockMovementListComponent },
+    { path: 'entrada-rapida', component: QuickEntryComponent },
     { path: 'movimentacoes/nova', component: StockMovementFormComponent },
     { path: 'alertas', component: AlertsComponent },
     { path: 'relatorios', component: ReportsComponent },
     { path: 'valores', component: FinancialValuesComponent },
     { path: 'tipos-saida', component: ExitTypeListComponent },
+    { path: 'tipos-entrada', component: EntryTypeListComponent },
     { path: 'sugestoes', component: SmartSuggestionsComponent },
     { path: 'whatsapp', component: WhatsappMessagesComponent },
     { path: 'equipe', component: TeamComponent },
@@ -45,3 +49,4 @@ export const routes: Routes = [
   ]},
   { path: '**', redirectTo: '' }
 ];
+
