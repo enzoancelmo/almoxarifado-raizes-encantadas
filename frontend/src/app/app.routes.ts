@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { AlertsComponent } from './features/alerts/alerts.component';
@@ -19,6 +19,7 @@ import { TeamComponent } from './features/team/team.component';
 import { FinancialValuesComponent } from './features/financial/financial-values.component';
 import { ExitTypeListComponent } from './features/exit-types/exit-type-list.component';
 import { QuickEntryComponent } from './features/quick-entry/quick-entry.component';
+import { QuickExitComponent } from './features/quick-exit/quick-exit.component';
 import { EntryTypeListComponent } from './features/entry-types/entry-type-list.component';
 
 export const routes: Routes = [
@@ -36,6 +37,7 @@ export const routes: Routes = [
     { path: 'fornecedores/:id/editar', component: SupplierFormComponent },
     { path: 'movimentacoes', component: StockMovementListComponent },
     { path: 'entrada-rapida', component: QuickEntryComponent },
+    { path: 'saida-rapida', component: QuickExitComponent },
     { path: 'movimentacoes/nova', component: StockMovementFormComponent },
     { path: 'alertas', component: AlertsComponent },
     { path: 'relatorios', component: ReportsComponent },

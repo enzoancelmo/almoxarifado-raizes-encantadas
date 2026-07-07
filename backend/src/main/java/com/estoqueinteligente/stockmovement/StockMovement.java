@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.estoqueinteligente.entrytype.EntryType;
 import com.estoqueinteligente.exittype.ExitType;
 import com.estoqueinteligente.product.Product;
+import com.estoqueinteligente.quickexit.StockExitBatch;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +21,7 @@ public class StockMovement {
     @Column(name="total_value",nullable=false,precision=15,scale=2) private BigDecimal totalValue=BigDecimal.ZERO;
     @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="entry_type_id") private EntryType entryType;
     @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="exit_type_id") private ExitType exitType;
+    @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="exit_batch_id") private StockExitBatch exitBatch;
     @Column(length=255) private String reason;
     @Column(name="responsible_name",length=150) private String responsibleName;
     @Column(length=255) private String purpose;
@@ -36,6 +38,7 @@ public class StockMovement {
     public BigDecimal getTotalValue(){return totalValue;} public void setTotalValue(BigDecimal v){totalValue=v==null?BigDecimal.ZERO:v;}
     public EntryType getEntryType(){return entryType;} public void setEntryType(EntryType v){entryType=v;}
     public ExitType getExitType(){return exitType;} public void setExitType(ExitType v){exitType=v;}
+    public StockExitBatch getExitBatch(){return exitBatch;} public void setExitBatch(StockExitBatch v){exitBatch=v;}
     public String getReason(){return reason;} public void setReason(String v){reason=v;} public Instant getCreatedAt(){return createdAt;}
     public String getResponsibleName(){return responsibleName;} public void setResponsibleName(String v){responsibleName=v;} public String getPurpose(){return purpose;} public void setPurpose(String v){purpose=v;} public String getEventName(){return eventName;} public void setEventName(String v){eventName=v;} public String getNotes(){return notes;} public void setNotes(String v){notes=v;}
 }
