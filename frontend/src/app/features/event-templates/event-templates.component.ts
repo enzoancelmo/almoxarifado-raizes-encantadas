@@ -1,35 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { EventTemplate, EventTemplatePayload } from '../../core/models/event-template.model';
+import { EventTemplate, EventTemplateItem, EventTemplateItemPayload, EventTemplatePayload } from '../../core/models/event-template.model';
 import { Product } from '../../core/models/product.model';
 import { EventTemplateService } from '../../core/services/event-template.service';
 import { ProductService } from '../../core/services/product.service';
 
-@Component({ selector: 'app-event-templates', standalone: true, imports: [CommonModule, FormsModule], templateUrl: './event-templates.component.html', styleUrl: './event-templates.component.css' })
-export class EventTemplatesComponent implements OnInit {
-  templates: EventTemplate[] = [];
-  products: Product[] = [];
-  selected: EventTemplate | null = null;
-  loading = true;
-  saving = false;
-  error = '';
-  success = '';
-  search = '';
-  form = { name: '', description: '', eventType: '', active: true, notes: '' };
-  itemForm = { itemId: null as number | null, suggestedQuantity: 1, notes: '' };
+interface ImportPreview { itemName:string; itemId:number|null; unitOfMeasure:string|null; suggestedQuantity:number; notes:string|null; status:string; currentQuantity:number; missingQuantity:number; }
 
-  constructor(private readonly service: EventTemplateService, private readonly productsService: ProductService, private readonly cdr: ChangeDetectorRef) {}
-  ngOnInit(): void { this.load(); this.productsService.list().subscribe(data => this.products = data); }
-  get filtered(): EventTemplate[] { const t=this.search.trim().toLowerCase(); return this.templates.filter(m=>!t||m.name.toLowerCase().includes(t)||(m.eventType||'').toLowerCase().includes(t)); }
-  newTemplate(): void { this.selected = null; this.form = { name: '', description: '', eventType: '', active: true, notes: '' }; this.success=''; this.error=''; }
-  select(template: EventTemplate): void { this.service.get(template.id).subscribe({ next: data => { this.selected=data; this.form={name:data.name,description:data.description||'',eventType:data.eventType||'',active:data.active,notes:data.notes||''}; this.success=''; this.error=''; this.cdr.markForCheck(); }, error: e => this.error=this.apiError(e,'Não foi possível abrir o modelo.') }); }
-  save(): void { if(!this.form.name.trim()){this.error='Informe o nome do modelo.'; return;} const payload:EventTemplatePayload={name:this.form.name.trim(),description:this.form.description.trim()||null,eventType:this.form.eventType.trim()||null,active:this.form.active,notes:this.form.notes.trim()||null}; this.saving=true; const call=this.selected?this.service.update(this.selected.id,payload):this.service.create(payload); call.subscribe({next:data=>{this.selected=data;this.success='Modelo salvo.';this.saving=false;this.load(false);},error:e=>{this.error=this.apiError(e,'Não foi possível salvar o modelo.');this.saving=false;}}); }
-  deactivate(template: EventTemplate): void { this.service.deactivate(template.id).subscribe({ next:()=>{this.success='Modelo desativado.';this.load(); if(this.selected?.id===template.id)this.newTemplate();}, error:e=>this.error=this.apiError(e,'Não foi possível desativar o modelo.') }); }
-  addItem(): void { if(!this.selected){this.error='Salve o modelo antes de adicionar itens.';return;} if(!this.itemForm.itemId){this.error='Selecione um item.';return;} if(!this.itemForm.suggestedQuantity||this.itemForm.suggestedQuantity<=0){this.error='Quantidade sugerida deve ser maior que zero.';return;} const payload={itemId:Number(this.itemForm.itemId),suggestedQuantity:Number(this.itemForm.suggestedQuantity),notes:this.itemForm.notes.trim()||null}; this.service.addItem(this.selected.id,payload).subscribe({next:data=>{this.selected=data;this.itemForm={itemId:null,suggestedQuantity:1,notes:''};this.success='Item adicionado ao modelo.';this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível adicionar o item.')}); }
-  updateItem(itemId:number,itemProductId:number,quantity:number,notes:string|null): void { if(!this.selected)return; if(!quantity||quantity<=0){this.error='Quantidade sugerida deve ser maior que zero.';return;} this.service.updateItem(this.selected.id,itemId,{itemId:itemProductId,suggestedQuantity:Number(quantity),notes:notes||null}).subscribe({next:data=>{this.selected=data;this.success='Item atualizado.';this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível atualizar o item.')}); }
-  removeItem(itemId:number): void { if(!this.selected)return; this.service.deleteItem(this.selected.id,itemId).subscribe({next:data=>{this.selected=data;this.success='Item removido.';this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível remover o item.')}); }
-  productName(id:number|null): string { return this.products.find(p=>p.id===Number(id))?.name || ''; }
-  private load(reset=true): void { this.loading=true; this.service.list().subscribe({next:data=>{this.templates=data;this.loading=false;if(reset&&!this.selected&&data.length)this.select(data[0]);this.cdr.markForCheck();},error:e=>{this.error=this.apiError(e,'Não foi possível carregar os modelos.');this.loading=false;}}); }
-  private apiError(error:any,fallback:string): string { if(error?.status===401)return 'Sua sessão expirou. Faça login novamente.'; const fields=error?.error?.fields?Object.values(error.error.fields).join(' '):''; return fields||error?.error?.message||fallback; }
+@Component({ selector:'app-event-templates', standalone:true, imports:[CommonModule,FormsModule], templateUrl:'./event-templates.component.html', styleUrl:'./event-templates.component.css' })
+export class EventTemplatesComponent implements OnInit{
+  templates:EventTemplate[]=[];products:Product[]=[];selected:EventTemplate|null=null;loading=true;saving=false;error='';success='';search='';showImport=false;importText='';preview:ImportPreview[]=[];
+  form={name:'',description:'',eventType:'',active:true,notes:''}; itemForm={itemId:null as number|null,itemName:'',unitOfMeasure:'',suggestedQuantity:1,notes:''};
+  constructor(private service:EventTemplateService,private productsService:ProductService,private cdr:ChangeDetectorRef){}
+  ngOnInit(){this.load();this.productsService.list().subscribe(d=>this.products=d);}
+  get filtered(){const t=this.search.trim().toLowerCase();return this.templates.filter(m=>!t||m.name.toLowerCase().includes(t)||(m.eventType||'').toLowerCase().includes(t));}
+  get purchaseList(){return (this.selected?.items||[]).filter(i=>i.status!=='DISPONIVEL');}
+  get availableList(){return (this.selected?.items||[]).filter(i=>i.status==='DISPONIVEL');}
+  newTemplate(){this.selected=null;this.form={name:'',description:'',eventType:'',active:true,notes:''};this.success='';this.error='';}
+  select(t:EventTemplate){this.service.get(t.id).subscribe({next:d=>{this.selected=d;this.form={name:d.name,description:d.description||'',eventType:d.eventType||'',active:d.active,notes:d.notes||''};this.success='';this.error='';this.cdr.markForCheck();},error:e=>this.error=this.apiError(e,'Não foi possível abrir o modelo.')});}
+  save(){if(!this.form.name.trim()){this.error='Informe o nome do modelo.';return;}const p:EventTemplatePayload={name:this.form.name.trim(),description:this.form.description.trim()||null,eventType:this.form.eventType.trim()||null,active:this.form.active,notes:this.form.notes.trim()||null};this.saving=true;(this.selected?this.service.update(this.selected.id,p):this.service.create(p)).subscribe({next:d=>{this.selected=d;this.success='Modelo salvo.';this.saving=false;this.load(false);},error:e=>{this.error=this.apiError(e,'Não foi possível salvar o modelo.');this.saving=false;}});}
+  deactivate(t:EventTemplate){this.service.deactivate(t.id).subscribe({next:()=>{this.success='Modelo desativado.';this.load();if(this.selected?.id===t.id)this.newTemplate();},error:e=>this.error=this.apiError(e,'Não foi possível desativar o modelo.')});}
+  addItem(){if(!this.selected){this.error='Salve o modelo antes de adicionar itens.';return;}const product=this.products.find(p=>p.id===Number(this.itemForm.itemId));const payload:EventTemplateItemPayload={itemId:this.itemForm.itemId?Number(this.itemForm.itemId):null,itemName:product?.name||this.itemForm.itemName.trim()||null,unitOfMeasure:product?.unitOfMeasure||this.itemForm.unitOfMeasure.trim()||null,suggestedQuantity:Number(this.itemForm.suggestedQuantity),notes:this.itemForm.notes.trim()||null};this.saveItemPayload(payload,'Item adicionado ao modelo.');}
+  updateItem(item:EventTemplateItem){if(!this.selected)return;const payload:EventTemplateItemPayload={itemId:item.itemId,itemName:item.itemName,unitOfMeasure:item.unitOfMeasure,suggestedQuantity:Number(item.suggestedQuantity),notes:item.notes||null};this.service.updateItem(this.selected.id,item.id,payload).subscribe({next:d=>{this.selected=d;this.success='Item atualizado.';this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível atualizar o item.')});}
+  removeItem(id:number){if(!this.selected)return;this.service.deleteItem(this.selected.id,id).subscribe({next:d=>{this.selected=d;this.success='Item removido.';this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível remover o item.')});}
+  parseImport(){this.preview=this.importText.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(line=>{let parts=line.includes(';')?line.split(';'):line.split(/\s+-\s+/);const name=(parts[0]||'').trim();const qty=Number((parts[1]||'1').replace(',','.'))||1;const unit=(parts[2]||'').trim()||null;const notes=(parts[3]||'').trim()||null;const product=this.products.find(p=>p.name.toLowerCase()===name.toLowerCase());const current=product?.currentQuantity||0;const missing=Math.max(0,qty-current);const status=product?(current>=qty?'DISPONIVEL':current>0?'ESTOQUE_INSUFICIENTE':'PRECISA_COMPRAR'):'NAO_CADASTRADO';return{itemName:name,itemId:product?.id||null,unitOfMeasure:product?.unitOfMeasure||unit,suggestedQuantity:qty,notes,status,currentQuantity:current,missingQuantity:missing};});}
+  saveImport(){if(!this.selected){this.error='Salve o modelo antes de importar itens.';return;}if(!this.preview.length)this.parseImport();this.importNext(0);}
+  printList(){window.print();}
+  statusLabel(s:string){return{DISPONIVEL:'Disponível',ESTOQUE_INSUFICIENTE:'Estoque insuficiente',PRECISA_COMPRAR:'Precisa comprar',NAO_CADASTRADO:'Não cadastrado'}[s]||s;}
+  private importNext(i:number){if(!this.selected)return;if(i>=this.preview.length){this.success='Lista importada para o modelo.';this.showImport=false;this.importText='';this.preview=[];this.service.get(this.selected.id).subscribe(d=>this.selected=d);return;}const p=this.preview[i];this.service.addItem(this.selected.id,{itemId:p.itemId,itemName:p.itemName,unitOfMeasure:p.unitOfMeasure,suggestedQuantity:p.suggestedQuantity,notes:p.notes}).subscribe({next:()=>this.importNext(i+1),error:e=>{this.error=this.apiError(e,'Falha ao importar item: '+p.itemName);}});}
+  private saveItemPayload(payload:EventTemplateItemPayload,msg:string){if(!payload.suggestedQuantity||payload.suggestedQuantity<=0){this.error='Quantidade sugerida deve ser maior que zero.';return;}if(!payload.itemId&&!payload.itemName){this.error='Selecione um item ou informe o nome do item não cadastrado.';return;}this.service.addItem(this.selected!.id,payload).subscribe({next:d=>{this.selected=d;this.itemForm={itemId:null,itemName:'',unitOfMeasure:'',suggestedQuantity:1,notes:''};this.success=msg;this.load(false);},error:e=>this.error=this.apiError(e,'Não foi possível adicionar o item.')});}
+  private load(reset=true){this.loading=true;this.service.list().subscribe({next:d=>{this.templates=d;this.loading=false;if(reset&&!this.selected&&d.length)this.select(d[0]);this.cdr.markForCheck();},error:e=>{this.error=this.apiError(e,'Não foi possível carregar os modelos.');this.loading=false;}});}
+  private apiError(e:any,f:string){if(e?.status===401)return'Sua sessão expirou. Faça login novamente.';const fields=e?.error?.fields?Object.values(e.error.fields).join(' '):'';return fields||e?.error?.message||f;}
 }

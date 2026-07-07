@@ -84,12 +84,12 @@
       </label>
 
       <label>
-        Origem da entrada
+        Origem da contribuição
         <select [(ngModel)]="entry.entryTypeId">
           <option [ngValue]="null">Selecione</option>
           <option *ngFor="let type of entryTypes" [ngValue]="type.id">{{ type.name }}</option>
         </select>
-        <small><a routerLink="/tipos-entrada">Cadastrar novo tipo</a></small>
+        <small><a routerLink="/tipos-entrada">Cadastrar contribuição</a></small>
       </label>
 
       <label>Responsável<input [(ngModel)]="entry.responsibleName"></label>

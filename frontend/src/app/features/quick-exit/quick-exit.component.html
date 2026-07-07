@@ -1,4 +1,179 @@
-<div class="page-heading"><div><span class="breadcrumb">Almoxarifado / Saída Rápida</span><h1>Saída Rápida</h1><p>Use um modelo de evento ou monte um carrinho de itens manualmente.</p></div><a routerLink="/movimentacoes">Ver movimentações</a></div>
-<div *ngIf="success" class="success">✓ {{ success }}</div><div *ngIf="error" class="alert">{{ error }}</div><div *ngIf="loading" class="state">Carregando itens...</div>
-<section class="panel" *ngIf="!loading"><div class="event-form"><label>Evento/Cerimônia<input [(ngModel)]="form.eventName" placeholder="Ex.: Terra, o primeiro altar"></label><label>Usar modelo de evento<select [(ngModel)]="form.eventTemplateId"><option [ngValue]="null">Sem modelo</option><option *ngFor="let template of activeTemplates" [ngValue]="template.id">{{template.name}}</option></select></label><label>Tipo de saída *<select [(ngModel)]="form.exitTypeId"><option [ngValue]="null">Selecione</option><option *ngFor="let type of exitTypes" [ngValue]="type.id">{{type.name}}</option></select></label><label>Responsável<input [(ngModel)]="form.responsibleName" placeholder="Nome de quem retirou/separou"></label><label>Data da saída<input type="date" [(ngModel)]="form.exitDate"></label><label class="wide">Observação geral<textarea rows="3" [(ngModel)]="form.notes" placeholder="Materiais separados para cerimônia..."></textarea></label><div class="wide model-actions"><button type="button" class="primary" (click)="loadTemplate()">Carregar modelo</button><small>Carregar o modelo apenas preenche o carrinho. O estoque só baixa ao clicar em Salvar saída.</small></div></div></section>
-<section class="panel" *ngIf="!loading"><div class="items-heading"><div><h2>Carrinho de saída</h2><p>Confira estoque disponível, quantidade, valor unitário e total antes de confirmar.</p></div><div class="heading-buttons"><button type="button" (click)="clearCart()">Limpar carrinho</button><button type="button" class="primary" (click)="addLine()">＋ Adicionar item</button></div></div><div class="quick-table"><article class="line" *ngFor="let line of lines; let index = index"><header><strong>Item {{index+1}}</strong><button type="button" (click)="removeLine(line)">Remover</button></header><div class="line-grid"><label class="item-select">Item<select [(ngModel)]="line.itemId" (ngModelChange)="onSelect(line)"><option [ngValue]="null">Selecione um item</option><option *ngFor="let product of products" [ngValue]="product.id">{{product.name}} — {{product.currentQuantity}} {{product.unitOfMeasure||'un.'}}</option></select></label><label>Quantidade de saída<input type="number" min="1" step="1" [(ngModel)]="line.quantity"></label><label>Valor unitário sugerido<input type="number" min="0" step="0.01" [(ngModel)]="line.unitValue"></label><label>Valor total<input [value]="lineTotal(line)|currency:'BRL':'symbol':'1.2-2':'pt-BR'" readonly></label><label class="wide">Observação do item<input [(ngModel)]="line.notes" placeholder="Opcional"></label></div><div class="product-info" *ngIf="selectedProduct(line) as product"><span>Disponível: <b>{{product.currentQuantity}}</b> {{product.unitOfMeasure||'un.'}}</span><span>Custo médio: <b>{{product.averageCost|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</b></span><span>Valor em estoque: <b>{{product.currentStockValue|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</b></span><span>Status: <b>{{statusLabel(product.status)}}</b></span></div></article></div><footer class="summary"><div><span>Itens diferentes</span><strong>{{totalItems}}</strong></div><div><span>Quantidade total</span><strong>{{totalQuantity}}</strong></div><div><span>Valor total estimado</span><strong>{{totalValue|currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</strong></div><div class="actions"><button type="button" (click)="clear()">Cancelar</button><button type="button" class="primary" [disabled]="saving" (click)="save()">{{saving?'Salvando...':'Salvar saída'}}</button></div></footer></section>
+<div class="page-heading">
+  <div>
+    <span class="breadcrumb">Almoxarifado / Saída Rápida</span>
+    <h1>Saída Rápida</h1>
+    <p>Use um modelo de evento, confira o que tem no estoque e imprima a lista do que precisa comprar.</p>
+  </div>
+  <a routerLink="/movimentacoes">Ver movimentações</a>
+</div>
+
+<div *ngIf="success" class="success">✓ {{ success }}</div>
+<div *ngIf="error" class="alert">{{ error }}</div>
+<div *ngIf="loading" class="state">Carregando itens...</div>
+
+<section class="panel" *ngIf="!loading">
+  <div class="event-form">
+    <label>
+      Evento/Cerimônia
+      <input [(ngModel)]="form.eventName" placeholder="Ex.: Terra, o primeiro altar">
+    </label>
+
+    <label>
+      Usar modelo de evento
+      <select [(ngModel)]="form.eventTemplateId">
+        <option [ngValue]="null">Sem modelo</option>
+        <option *ngFor="let template of activeTemplates" [ngValue]="template.id">{{ template.name }}</option>
+      </select>
+    </label>
+
+    <label>
+      Tipo de saída *
+      <select [(ngModel)]="form.exitTypeId">
+        <option [ngValue]="null">Selecione</option>
+        <option *ngFor="let type of exitTypes" [ngValue]="type.id">{{ type.name }}</option>
+      </select>
+    </label>
+
+    <label>
+      Responsável
+      <input [(ngModel)]="form.responsibleName" placeholder="Nome de quem retirou/separou">
+    </label>
+
+    <label>
+      Data da saída
+      <input type="date" [(ngModel)]="form.exitDate">
+    </label>
+
+    <label class="wide">
+      Observação geral
+      <textarea rows="3" [(ngModel)]="form.notes" placeholder="Materiais separados para cerimônia..."></textarea>
+    </label>
+
+    <div class="wide model-actions">
+      <button type="button" class="primary" (click)="loadTemplate()">Carregar modelo</button>
+      <small>Carregar o modelo apenas preenche o carrinho. O estoque só baixa ao clicar em Salvar saída.</small>
+    </div>
+  </div>
+</section>
+
+<section class="panel print-area" *ngIf="!loading">
+  <div class="items-heading">
+    <div>
+      <h2>Carrinho de saída</h2>
+      <p>Itens indisponíveis entram na lista de compras e não são baixados do estoque.</p>
+    </div>
+    <div class="heading-buttons no-print">
+      <button type="button" (click)="printList()">Imprimir lista</button>
+      <button type="button" (click)="clearCart()">Limpar carrinho</button>
+      <button type="button" class="primary" (click)="addLine()">＋ Adicionar item</button>
+    </div>
+  </div>
+
+  <div class="print-title">
+    <h2>Lista de Materiais{{ form.eventName ? ' - ' + form.eventName : '' }}</h2>
+    <p>Disponíveis para baixa e itens que precisam comprar/separar.</p>
+  </div>
+
+  <div class="quick-table">
+    <article class="line" *ngFor="let line of lines; let index = index">
+      <header>
+        <strong>{{ line.itemName || ('Item ' + (index + 1)) }}</strong>
+        <button class="no-print" type="button" (click)="removeLine(line)">Remover</button>
+      </header>
+
+      <div class="line-grid">
+        <label class="item-select no-print">
+          Item cadastrado
+          <select [(ngModel)]="line.itemId" (ngModelChange)="onSelect(line)">
+            <option [ngValue]="null">Selecione um item</option>
+            <option *ngFor="let product of products" [ngValue]="product.id">
+              {{ product.name }} — {{ product.currentQuantity }} {{ product.unitOfMeasure || 'un.' }}
+            </option>
+          </select>
+        </label>
+
+        <label *ngIf="!line.itemId">
+          Item não cadastrado
+          <input [(ngModel)]="line.itemName" placeholder="Ex.: Folha de louro">
+        </label>
+
+        <label *ngIf="!line.itemId">
+          Unidade
+          <input [(ngModel)]="line.unitOfMeasure" placeholder="un., kg, pacote...">
+        </label>
+
+        <label>
+          Quantidade solicitada
+          <input type="number" min="1" step="1" [(ngModel)]="line.quantity">
+        </label>
+
+        <label>
+          Valor unitário sugerido
+          <input type="number" min="0" step="0.01" [(ngModel)]="line.unitValue">
+        </label>
+
+        <label>
+          Valor total
+          <input [value]="lineTotal(line)|currency:'BRL':'symbol':'1.2-2':'pt-BR'" readonly>
+        </label>
+
+        <label class="wide no-print">
+          Observação do item
+          <input [(ngModel)]="line.notes" placeholder="Opcional">
+        </label>
+      </div>
+
+      <div class="product-info">
+        <span class="status-pill" [ngClass]="lineStatus(line)">{{ statusText(lineStatus(line)) }}</span>
+        <span>Solicitado: <b>{{ line.quantity }}</b> {{ line.unitOfMeasure || selectedProduct(line)?.unitOfMeasure || 'un.' }}</span>
+        <span>Disponível para baixar: <b>{{ availableToExit(line) }}</b></span>
+        <span *ngIf="missingQuantity(line) > 0">Precisa comprar: <b>{{ missingQuantity(line) }}</b></span>
+        <span *ngIf="selectedProduct(line) as product">Custo médio: <b>{{ product.averageCost|currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+      </div>
+    </article>
+  </div>
+
+  <div class="shopping-list" *ngIf="purchaseList.length">
+    <h3>Lista de compras / pendências</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Solicitado</th>
+          <th>Disponível</th>
+          <th>Comprar</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let line of purchaseList">
+          <td>{{ line.itemName || selectedProduct(line)?.name }}</td>
+          <td>{{ line.quantity }}</td>
+          <td>{{ availableToExit(line) }}</td>
+          <td>{{ missingQuantity(line) || line.quantity }}</td>
+          <td><span class="status-pill" [ngClass]="lineStatus(line)">{{ statusText(lineStatus(line)) }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="summary no-print">
+    <div>
+      <span>Itens na lista</span>
+      <strong>{{ totalItems }}</strong>
+    </div>
+    <div>
+      <span>Quantidade solicitada</span>
+      <strong>{{ totalQuantity }}</strong>
+    </div>
+    <div>
+      <span>Valor total estimado</span>
+      <strong>{{ totalValue|currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+    </div>
+    <div class="actions">
+      <button type="button" (click)="clear()">Cancelar</button>
+      <button type="button" (click)="printList()">Imprimir lista</button>
+      <button type="button" class="primary" [disabled]="saving" (click)="save()">{{ saving ? 'Salvando...' : 'Salvar saída' }}</button>
+    </div>
+  </footer>
+</section>
