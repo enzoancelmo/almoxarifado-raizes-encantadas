@@ -82,20 +82,30 @@
       </header>
 
       <div class="line-grid">
-        <label class="item-select no-print">
+        <div class="item-select search-box no-print">
+          <label>
           Buscar item cadastrado
           <input [(ngModel)]="line.productSearch" (ngModelChange)="onSearchChange(line)" placeholder="Digite o nome do item...">
-        </label>
+          </label>
+
+          <div class="suggestions" *ngIf="productSuggestions(line).length">
+            <button type="button" *ngFor="let product of productSuggestions(line)" (click)="selectSuggestedProduct(line, product)">
+              <strong>{{ product.name }}</strong>
+              <span>{{ product.currentQuantity }} {{ product.unitOfMeasure || 'un.' }} disponível • {{ product.categoryName }}</span>
+            </button>
+          </div>
+
+          <small *ngIf="line.productSearch && !line.itemId && !productSuggestions(line).length">Nenhum item cadastrado encontrado com esse nome.</small>
+        </div>
 
         <label class="item-select no-print">
-          Item cadastrado
+          Item cadastrado selecionado
           <select [(ngModel)]="line.itemId" (ngModelChange)="onSelect(line)">
             <option [ngValue]="null">Selecione um item</option>
             <option *ngFor="let product of filteredProducts(line)" [ngValue]="product.id">
               {{ product.name }} — {{ product.currentQuantity }} {{ product.unitOfMeasure || 'un.' }}
             </option>
           </select>
-          <small *ngIf="line.productSearch && !filteredProducts(line).length">Nenhum item cadastrado encontrado com esse nome.</small>
         </label>
 
         <label *ngIf="!line.itemId">

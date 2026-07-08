@@ -101,6 +101,12 @@ export class QuickExitComponent implements OnInit {
       .slice(0, 50);
   }
 
+  productSuggestions(line: QuickExitLine): Product[] {
+    const term = line.productSearch.trim();
+    if (!term || line.itemId) return [];
+    return this.filteredProducts(line).slice(0, 8);
+  }
+
   lineTotal(line: QuickExitLine): number {
     return Number(line.quantity || 0) * Number(line.unitValue || 0);
   }
@@ -111,6 +117,11 @@ export class QuickExitComponent implements OnInit {
       line.unitValue = null;
       line.unitOfMeasure = null;
     }
+  }
+
+  selectSuggestedProduct(line: QuickExitLine, product: Product): void {
+    line.itemId = product.id;
+    this.onSelect(line);
   }
 
   onSelect(line: QuickExitLine): void {
