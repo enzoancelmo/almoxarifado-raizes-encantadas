@@ -32,11 +32,13 @@ public class QuickEntryRequest {
         @NotNull(message="Tipo/Categoria é obrigatório") private Long categoryId;
         @Size(max=60) private String unitOfMeasure;
         @NotNull(message="Necessidade mensal é obrigatória") @Min(0) private Integer monthlyRequiredQuantity;
+        private LocalDate expirationDate;
         public String getName(){return name;} public void setName(String v){name=v;}
         public String getBrand(){return brand;} public void setBrand(String v){brand=v;}
         public String getEntityPurpose(){return entityPurpose;} public void setEntityPurpose(String v){entityPurpose=v;}
         public Long getCategoryId(){return categoryId;} public void setCategoryId(Long v){categoryId=v;}
         public String getUnitOfMeasure(){return unitOfMeasure;} public void setUnitOfMeasure(String v){unitOfMeasure=v;}
         public Integer getMonthlyRequiredQuantity(){return monthlyRequiredQuantity;} public void setMonthlyRequiredQuantity(Integer v){monthlyRequiredQuantity=v;}
+        public LocalDate getExpirationDate(){return expirationDate;} public void setExpirationDate(LocalDate v){expirationDate=v;}
     }
 }

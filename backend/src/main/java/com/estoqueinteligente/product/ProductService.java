@@ -4,6 +4,7 @@ import com.estoqueinteligente.category.CategoryService;
 import com.estoqueinteligente.common.ResourceNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class ProductService {
         p.setQuantity(r.getCurrentQuantity().intValue());p.setMonthlyRequiredQuantity(r.getMonthlyRequiredQuantity().intValue());
         p.setMinimumStock(p.getMonthlyRequiredQuantity());p.setCountPending(Boolean.TRUE.equals(r.getCountPending()));
         p.setPurchaseValue(defaultMoney(r.getPurchaseValue()));p.setExitValue(defaultMoney(r.getExitValue()));
+        p.setExpirationDate(r.getExpirationDate());
         p.setNotes(normalize(r.getNotes()));p.setCostPrice(p.getPurchaseValue());p.setSalePrice(p.getExitValue());
     }
     private BigDecimal defaultMoney(BigDecimal v){return v==null?BigDecimal.ZERO:v;}
@@ -36,6 +38,12 @@ public class ProductService {
     }
     private String normalize(String v){return v==null||v.isBlank()?null:v.trim();}
     public ProductStatus calculateStatus(Product p){
+        LocalDate expiration=p.getExpirationDate();
+        if(expiration!=null){
+            LocalDate today=LocalDate.now();
+            if(expiration.isBefore(today))return ProductStatus.VENCIDO;
+            if(!expiration.isAfter(today.plusDays(30)))return ProductStatus.VENCENDO;
+        }
         if(p.isCountPending())return ProductStatus.PENDENTE_CONTAGEM;
         int current=p.getQuantity(),monthly=p.getMonthlyRequiredQuantity();
         if(current==0&&monthly>0)return ProductStatus.NECESSIDADE_REPOSICAO;

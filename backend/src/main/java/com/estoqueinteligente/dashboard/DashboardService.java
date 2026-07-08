@@ -16,8 +16,8 @@ public class DashboardService {
     @Transactional(readOnly=true) public DashboardSummaryResponse getSummary(){
         List<ProductResponse> products=productService.findAll();
         long low=products.stream().filter(p->p.getStatus()==ProductStatus.SALDO_NEGATIVO).count();
-        long expiring=products.stream().filter(p->p.getStatus()==ProductStatus.PENDENTE_CONTAGEM).count();
-        long expired=products.stream().filter(p->p.getStatus()==ProductStatus.NECESSIDADE_REPOSICAO).count();
+        long expiring=products.stream().filter(p->p.getStatus()==ProductStatus.VENCENDO).count();
+        long expired=products.stream().filter(p->p.getStatus()==ProductStatus.VENCIDO).count();
         BigDecimal value=products.stream().map(ProductResponse::getTotalInventoryValue).reduce(BigDecimal.ZERO,BigDecimal::add);
         ZoneId zone=ZoneId.systemDefault(); YearMonth month=YearMonth.now(zone); Instant start=month.atDay(1).atStartOfDay(zone).toInstant(); Instant end=month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant();
         long entries=movementRepository.sumQuantityByTypeAndPeriod(StockMovementType.ENTRADA,start,end); long outputs=movementRepository.sumQuantityByTypeAndPeriod(StockMovementType.SAIDA,start,end);

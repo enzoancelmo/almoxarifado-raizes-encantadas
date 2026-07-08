@@ -50,6 +50,7 @@
       </label>
 
       <label>Unidade de medida<input [(ngModel)]="newItem.unitOfMeasure"></label>
+      <label>Validade <small>opcional</small><input type="date" [(ngModel)]="newItem.expirationDate"></label>
       <label>Necessidade mensal<input type="number" min="0" [(ngModel)]="newItem.monthlyRequiredQuantity"></label>
     </ng-container>
   </aside>

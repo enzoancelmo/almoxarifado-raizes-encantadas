@@ -34,7 +34,7 @@ public class QuickEntryService {
         QuickEntryRequest.NewItemRequest n=request.getNewItem();
         ProductRequest product=new ProductRequest();
         product.setName(n.getName());product.setBrand(n.getBrand());product.setEntityPurpose(n.getEntityPurpose());product.setUnitOfMeasure(n.getUnitOfMeasure());product.setCategoryId(n.getCategoryId());
-        product.setCurrentQuantity(0.0);product.setMonthlyRequiredQuantity(Double.valueOf(n.getMonthlyRequiredQuantity()));product.setPurchaseValue(request.getUnitValue());product.setExitValue(request.getUnitValue());product.setCountPending(false);product.setNotes(request.getNotes());
+        product.setCurrentQuantity(0.0);product.setMonthlyRequiredQuantity(Double.valueOf(n.getMonthlyRequiredQuantity()));product.setPurchaseValue(request.getUnitValue());product.setExitValue(request.getUnitValue());product.setExpirationDate(n.getExpirationDate());product.setCountPending(false);product.setNotes(request.getNotes());
         ProductResponse created=productService.create(product);
         StockMovementResponse movement=movementService.create(movementRequest(created.getId(),request,request.getUnitValue()));
         return new QuickEntryResponse(productService.findById(created.getId()),movement,"Item criado e entrada registrada com sucesso.");

@@ -46,7 +46,8 @@ export class QuickEntryComponent implements OnInit {
     entityPurpose: '',
     categoryId: null as number | null,
     unitOfMeasure: 'Unidade',
-    monthlyRequiredQuantity: 0
+    monthlyRequiredQuantity: 0,
+    expirationDate: ''
   };
 
   constructor(
@@ -133,7 +134,8 @@ export class QuickEntryComponent implements OnInit {
             entityPurpose: this.newItem.entityPurpose.trim() || null,
             categoryId: Number(this.newItem.categoryId),
             unitOfMeasure: this.newItem.unitOfMeasure.trim() || null,
-            monthlyRequiredQuantity: Number(this.newItem.monthlyRequiredQuantity || 0)
+            monthlyRequiredQuantity: Number(this.newItem.monthlyRequiredQuantity || 0),
+            expirationDate: this.newItem.expirationDate || null
           }
         : null,
       quantity: Number(this.entry.quantity),
