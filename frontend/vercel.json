@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build:cloud",
+  "outputDirectory": "dist/estoque-inteligente/browser",
+  "installCommand": "npm ci",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "name": "estoque-inteligente-frontend",
   "version": "0.1.0",
   "private": true,
-  "scripts": {"ng":"ng","start":"ng serve","build":"ng build","test":"ng test"},
+  "scripts": {"ng":"ng","start":"ng serve","build":"ng build","build:cloud":"node tools/generate-env.js && ng build","test":"ng test"},
   "dependencies": {
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",

@@ -4,7 +4,7 @@ Sistema web local para gestão de itens, materiais, medicinas e recursos de uso 
 
 ## Funcionalidades
 
-- 123 itens importados da planilha `Almoxarifado - Itens Instituto.xlsx`
+- Cadastro de itens, materiais, medicinas e recursos do Instituto
 - Tipos, marcas, finalidades e unidades preservados
 - Quantidade atual, necessidade mensal, saldo e status automáticos
 - Pendências de contagem e lista de reposição
@@ -25,11 +25,13 @@ Acesse `http://localhost`. O login inicial é `admin@raizesencantadas.com` / `ad
 
 No celular, use `http://IP-DO-SERVIDOR`. Consulte [README_INSTALACAO_LOCAL.md](README_INSTALACAO_LOCAL.md).
 
+Para publicar em nuvem com Vercel/Render, consulte [README_DEPLOY_NUVEM.md](README_DEPLOY_NUVEM.md).
+
 Para demonstrar o sistema ao Instituto, siga o [README_APRESENTACAO_CLIENTE.md](README_APRESENTACAO_CLIENTE.md).
 
 ## Carga inicial
 
-A migration `V7__instituto_initial_data.sql` cria 12 categorias e 123 itens. Campos vazios de quantidade atual são carregados como zero com status `PENDENTE_CONTAGEM`. O Dendê é carregado com 3 litros, necessidade mensal 5 e saldo calculado em −2.
+O sistema cria categorias e dados estruturais para iniciar o uso. Para deploy comercial com estoque vazio, siga o passo "Começar com estoque zerado" em [README_DEPLOY_NUVEM.md](README_DEPLOY_NUVEM.md).
 
 ## Tecnologias
 
