@@ -85,7 +85,7 @@
         <div class="item-select search-box no-print">
           <label>
           Buscar item cadastrado
-          <input [(ngModel)]="line.productSearch" (ngModelChange)="onSearchChange(line)" placeholder="Digite o nome do item...">
+          <input [id]="'quick-exit-search-' + line.uid" [(ngModel)]="line.productSearch" (ngModelChange)="onSearchChange(line)" placeholder="Digite o nome do item...">
           </label>
 
           <div class="suggestions" *ngIf="productSuggestions(line).length">

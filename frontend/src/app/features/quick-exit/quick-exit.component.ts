@@ -144,10 +144,13 @@ export class QuickExitComponent implements OnInit {
     line.productSearch = product.name;
     line.unitOfMeasure = product.unitOfMeasure;
     line.unitValue = this.suggestedUnitValue(product);
+    this.moveToNextEntryLine(line);
   }
 
   addLine(): void {
-    this.lines.push(this.newLine());
+    const line = this.newLine();
+    this.lines = [line, ...this.lines];
+    this.focusSearch(line.uid);
   }
 
   removeLine(line: QuickExitLine): void {
@@ -342,6 +345,24 @@ export class QuickExitComponent implements OnInit {
 
   private newLine(): QuickExitLine {
     return { uid: this.uid++, itemId: null, itemName: '', productSearch: '', unitOfMeasure: null, quantity: 1, unitValue: null, notes: '' };
+  }
+
+  private moveToNextEntryLine(currentLine: QuickExitLine): void {
+    const blankLine = this.lines.find(line => line.uid !== currentLine.uid && !line.itemId && !line.itemName && !line.productSearch);
+    if (blankLine) {
+      this.focusSearch(blankLine.uid);
+      return;
+    }
+
+    const line = this.newLine();
+    this.lines = [line, ...this.lines];
+    this.focusSearch(line.uid);
+  }
+
+  private focusSearch(uid: number): void {
+    setTimeout(() => {
+      document.getElementById(`quick-exit-search-${uid}`)?.focus();
+    }, 0);
   }
 
   private apiError(error: any, fallback: string): string {
