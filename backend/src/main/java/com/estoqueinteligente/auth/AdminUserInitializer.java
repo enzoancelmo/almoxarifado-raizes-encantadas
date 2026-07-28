@@ -14,22 +14,33 @@ public class AdminUserInitializer implements ApplicationRunner {
     private final String adminName;
     private final String adminEmail;
     private final String adminPassword;
+    private final boolean resetAdminPassword;
 
     public AdminUserInitializer(UserRepository repository, PasswordEncoder encoder,
             @Value("${app.admin.name:Administrador}") String adminName,
             @Value("${app.admin.email:admin@estoque.com}") String adminEmail,
-            @Value("${app.admin.password:admin123}") String adminPassword) {
+            @Value("${app.admin.password:admin123}") String adminPassword,
+            @Value("${app.admin.reset-password:false}") boolean resetAdminPassword) {
         this.repository = repository;
         this.encoder = encoder;
         this.adminName = adminName;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
+        this.resetAdminPassword = resetAdminPassword;
     }
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        if (repository.existsByEmailIgnoreCase(adminEmail)) return;
+        repository.findByEmailIgnoreCase(adminEmail).ifPresentOrElse(existingAdmin -> {
+            if (resetAdminPassword) {
+                existingAdmin.setName(adminName);
+                existingAdmin.setPassword(encoder.encode(adminPassword));
+                existingAdmin.setRole(UserRole.ADMIN);
+                existingAdmin.setActive(true);
+                repository.save(existingAdmin);
+            }
+        }, () -> {
         AppUser admin = new AppUser();
         admin.setName(adminName);
         admin.setEmail(adminEmail.toLowerCase());
@@ -37,5 +48,6 @@ public class AdminUserInitializer implements ApplicationRunner {
         admin.setRole(UserRole.ADMIN);
         admin.setActive(true);
         repository.save(admin);
+        });
     }
 }
