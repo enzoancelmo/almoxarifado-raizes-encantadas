@@ -30,3 +30,4 @@ app:
     email: ${ADMIN_EMAIL:admin@raizesencantadas.com}
     password: ${ADMIN_PASSWORD:admin123}
     reset-password: ${ADMIN_RESET_PASSWORD:${APP_ADMIN_RESET_PASSWORD:false}}
+    setup-token: ${ADMIN_SETUP_TOKEN:}
