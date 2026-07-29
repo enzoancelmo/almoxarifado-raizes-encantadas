@@ -1,1 +1,84 @@
-import { Injectable,signal } from '@angular/core';import { HttpClient } from '@angular/common/http';import { Observable,tap } from 'rxjs';import { environment } from '../../../environments/environment';import { AuthUser,LoginResponse } from '../models/auth.model';@Injectable({providedIn:'root'})export class AuthService{private readonly tokenKey='estoque_token';private readonly userKey='estoque_user';readonly currentUser=signal<AuthUser|null>(this.readUser());constructor(private readonly http:HttpClient){}login(email:string,password:string):Observable<LoginResponse>{return this.http.post<LoginResponse>(environment.apiUrl+'/auth/login',{email,password}).pipe(tap(response=>{localStorage.setItem(this.tokenKey,response.token);localStorage.setItem(this.userKey,JSON.stringify(response.user));this.currentUser.set(response.user);}));}registerUser(name:string,email:string,password:string):Observable<AuthUser>{return this.http.post<AuthUser>(environment.apiUrl+'/auth/register',{name,email,password,role:'USER'});}logout():void{localStorage.removeItem(this.tokenKey);localStorage.removeItem(this.userKey);this.currentUser.set(null);}getToken():string|null{return localStorage.getItem(this.tokenKey);}getUser():AuthUser|null{return this.currentUser();}isAuthenticated():boolean{const token=this.getToken();if(!token||!this.currentUser())return false;try{const payload=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');const claims=JSON.parse(atob(payload)) as {exp?:number};if(!claims.exp||claims.exp*1000<=Date.now()){this.logout();return false;}return true;}catch{this.logout();return false;}}private readUser():AuthUser|null{try{const value=localStorage.getItem(this.userKey);return value?JSON.parse(value) as AuthUser:null;}catch{return null;}}}
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+import { AuthUser, LoginResponse } from '../models/auth.model';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly tokenKey = 'estoque_token';
+  private readonly userKey = 'estoque_user';
+
+  readonly currentUser = signal<AuthUser | null>(this.readUser());
+
+  constructor(private readonly http: HttpClient) {}
+
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(environment.apiUrl + '/auth/login', {
+      email: email.trim(),
+      password: password.trim()
+    }).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.userKey, JSON.stringify(response.user));
+        this.currentUser.set(response.user);
+      })
+    );
+  }
+
+  registerUser(name: string, email: string, password: string): Observable<AuthUser> {
+    return this.http.post<AuthUser>(environment.apiUrl + '/auth/register', {
+      name,
+      email,
+      password,
+      role: 'USER'
+    });
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    this.currentUser.set(null);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  getUser(): AuthUser | null {
+    return this.currentUser();
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+
+    if (!token || !this.currentUser()) {
+      return false;
+    }
+
+    try {
+      const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const claims = JSON.parse(atob(payload)) as { exp?: number };
+
+      if (!claims.exp || claims.exp * 1000 <= Date.now()) {
+        this.logout();
+        return false;
+      }
+
+      return true;
+    } catch {
+      this.logout();
+      return false;
+    }
+  }
+
+  private readUser(): AuthUser | null {
+    try {
+      const value = localStorage.getItem(this.userKey);
+      return value ? JSON.parse(value) as AuthUser : null;
+    } catch {
+      return null;
+    }
+  }
+}
